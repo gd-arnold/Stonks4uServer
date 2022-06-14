@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		/* Language and Environment */
+		"target": "es2016",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+
+		/* Modules */
+		"module": "CommonJS",
+		"rootDir": "./src",
+
+		/* Emit */
+		"outDir": "./build",
+
+		/* Interop Constraints */
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+
+		/* Type Checking */
+		"strict": true,
+		"strictPropertyInitialization": false /* Check for class properties that are declared but not set in the constructor. */,
+		"skipLibCheck": true
+	}
+}
