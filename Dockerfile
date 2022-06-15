@@ -17,7 +17,6 @@ FROM node:16-alpine
 
 COPY --from=build --chown=node:node /app/node_modules /app/node_modules
 COPY --from=build --chown=node:node /app/build /app/build
-COPY --from=build --chown=node:node /app/.env /app/.env
 
 USER node
 
