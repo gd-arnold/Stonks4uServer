@@ -1,0 +1,8 @@
+version: '3'
+services:
+  stonks4u-server:
+    image: geopog/stonks4u-server
+    ports:
+      - 127.0.0.1:${LOCAL_PORT}:${PORT}
+    env_file:
+      - .env

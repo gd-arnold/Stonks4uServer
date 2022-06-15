@@ -1,0 +1,52 @@
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      statusResultSource: [$class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ],
+  ]);
+}
+
+pipeline {
+  agent {
+    label 'docker-agent'
+  }
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('geopog-dockerhub')
+  }
+  stages {
+    stage('Deploy image to Dockerhub') {
+      steps {
+        setBuildStatus("Deploying image to dockerhub", "PENDING");
+
+        sh 'docker build -t geopog/stonks4u-server .'
+        sh 'docker image prune --force'
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        sh 'docker push geopog/stonks4u-server'
+      }
+    }
+    stage('Deploy to Production') {
+      steps {
+        setBuildStatus("Deploying to production", "PENDING");
+
+        sshagent(['prod-root']) {
+          sh 'mv /home/jenkins/.env ./'
+          sh 'docker context create prod --docker "host=ssh://root@138.68.91.235"'
+          sh 'docker-compose --context prod pull'
+          sh 'docker-compose --context prod up --force-recreate -d'
+          sh 'docker --context prod image prune --force'
+        }
+      }
+    }
+  }
+  post {
+    success {
+      setBuildStatus("Build complete", "SUCCESS");
+    }
+    failure {
+      setBuildStatus("Build failed", "FAILURE")
+    }
+    always {
+      sh 'docker logout'
+    }
+  }
+}
