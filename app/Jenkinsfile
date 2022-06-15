@@ -31,8 +31,8 @@ pipeline {
         sshagent(['prod-root']) {
           sh 'mv /home/jenkins/.env ./app'
           sh 'docker context create prod --docker "host=ssh://root@138.68.91.235"'
-          sh 'docker-compose -f ./app/docker-compose.yaml --context prod pull'
-          sh 'docker-compose -f ./app/docker-compose.yaml --context prod up --force-recreate -d'
+          sh 'docker-compose --context prod -f ./app/docker-compose.yaml pull'
+          sh 'docker-compose --context prod -f ./app/docker-compose.yaml up --force-recreate -d'
           sh 'docker --context prod image prune --force'
         }
       }
