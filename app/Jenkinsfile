@@ -18,7 +18,7 @@ pipeline {
       steps {
         setBuildStatus("Deploying image to dockerhub", "PENDING");
 
-        sh 'docker build -t geopog/stonks4u-server .'
+        sh 'docker build -t geopog/stonks4u-server ./app'
         sh 'docker image prune --force'
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
         sh 'docker push geopog/stonks4u-server'
@@ -29,10 +29,10 @@ pipeline {
         setBuildStatus("Deploying to production", "PENDING");
 
         sshagent(['prod-root']) {
-          sh 'mv /home/jenkins/.env ./'
+          sh 'mv /home/jenkins/.env ./app'
           sh 'docker context create prod --docker "host=ssh://root@138.68.91.235"'
-          sh 'docker-compose --context prod pull'
-          sh 'docker-compose --context prod up --force-recreate -d'
+          sh 'docker-compose -f ./app/docker-compose.yaml --context prod pull'
+          sh 'docker-compose -f ./app/docker-compose.yaml --context prod up --force-recreate -d'
           sh 'docker --context prod image prune --force'
         }
       }
