@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
-		"start": "cross-env NODE_ENV=prod node build/index.js",
+		"start": "cross-env NODE_ENV=production node build/index.js",
 		"build": "rm -rf ./build && tsc",
 		"dev": "cross-env NODE_ENV=dev nodemon src/index.ts",
 		"format": "prettier --ignore-path .gitignore --write ./**/*.{ts,json}"

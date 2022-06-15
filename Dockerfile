@@ -21,6 +21,6 @@ COPY --from=build /app/.env /app/.env
 
 WORKDIR /app
 
-ENV NODE_ENV=prod
+ENV NODE_ENV=production
 
 CMD [ "node", "build/index.js" ]
