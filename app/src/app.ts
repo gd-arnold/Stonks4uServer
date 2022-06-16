@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
+import { AppDataSource } from './config/data-source';
 import { connectToDB } from './connect-db';
 
 const bootstrapApp = (PORT: number = Number(process.env.PORT)) => {
-	connectToDB();
+	connectToDB().then(() => AppDataSource.runMigrations());
 
 	const app = express();
 
