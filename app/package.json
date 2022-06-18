@@ -24,6 +24,7 @@
 	},
 	"homepage": "https://github.com/GeorgiArn/Stonks4uServer#readme",
 	"dependencies": {
+		"bcrypt": "^5.0.1",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.13.2",
 		"cors": "^2.8.5",
@@ -35,6 +36,7 @@
 		"typeorm": "^0.3.6"
 	},
 	"devDependencies": {
+		"@types/bcrypt": "^5.0.0",
 		"@types/cors": "^2.8.12",
 		"@types/express": "^4.17.13",
 		"@types/node": "^17.0.42",

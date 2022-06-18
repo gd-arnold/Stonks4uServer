@@ -11,7 +11,7 @@ const validate = (DTO: any) => async (req: Request, res: Response, next: NextFun
 		await validateOrReject(output, { validationError: { target: false } });
 		next();
 	} catch (errors: any) {
-		return res.send(400).send(errors);
+		res.status(400).json({ message: 'Validation failed.', errors });
 	}
 };
 
