@@ -1,0 +1,18 @@
+import { NextFunction, Request, Response } from 'express';
+import { plainToInstance } from 'class-transformer';
+import { validateOrReject } from 'class-validator';
+
+const validate = (DTO: any) => async (req: Request, res: Response, next: NextFunction) => {
+	// Transform request body object to an instance of DTO,
+	// so it can later be validated by class-validator
+	const output = plainToInstance(DTO, req.body);
+
+	try {
+		await validateOrReject(output, { validationError: { target: false } });
+		next();
+	} catch (errors: any) {
+		return res.send(400).send(errors);
+	}
+};
+
+export default validate;

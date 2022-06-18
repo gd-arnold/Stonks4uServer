@@ -24,6 +24,8 @@
 	},
 	"homepage": "https://github.com/GeorgiArn/Stonks4uServer#readme",
 	"dependencies": {
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.13.2",
 		"cors": "^2.8.5",
 		"cross-env": "^7.0.3",
 		"dotenv": "^16.0.1",
