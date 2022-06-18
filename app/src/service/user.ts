@@ -11,8 +11,12 @@ export const hashPassword = async (password: string, saltRounds: number = 10) =>
 	return hash;
 };
 
-export const userExists = async (email: string) => {
-	return !!(await UserRepository.findOneBy({ email }));
+export const isPasswordValid = async (password: string, user: User) => {
+	return await bcrypt.compare(password, user.passwordHash);
+};
+
+export const findUserByEmail = async (email: string) => {
+	return await UserRepository.findOneBy({ email });
 };
 
 export const save = async (input: Partial<User>) => {
