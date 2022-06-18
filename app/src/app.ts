@@ -3,7 +3,7 @@ import { AppDataSource } from './config/data-source';
 import { connectToDB } from './connect-db';
 
 const bootstrapApp = (PORT: number = Number(process.env.PORT)) => {
-	connectToDB().then(async () => await AppDataSource.runMigrations());
+	connectToDB().then(() => AppDataSource.runMigrations());
 
 	const app = express();
 
