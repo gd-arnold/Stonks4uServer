@@ -8,7 +8,10 @@
 		"build": "rm -rf ./build && tsc",
 		"dev": "cross-env NODE_ENV=dev nodemon src/index.ts",
 		"format": "prettier --ignore-path .gitignore --write ./**/*.{ts,json}",
-		"typeorm": "typeorm-ts-node-esm"
+		"typeorm": "typeorm-ts-node-esm",
+		"migration:generate": "typeorm-ts-node-esm migration:generate -d src/config/data-source.ts",
+		"migration:up": "typeorm-ts-node-esm migration:run -d src/config/data-source.ts",
+		"migration:down": "typeorm-ts-node-esm migration:revert -d src/config/data-source.ts"
 	},
 	"repository": {
 		"type": "git",

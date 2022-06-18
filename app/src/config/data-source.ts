@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import 'dotenv/config';
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 
@@ -24,6 +24,6 @@ export const AppDataSource = new DataSource({
 				ca: certificate.toString(),
 		  }
 		: false,
-	entities: ['../entity/**/*.ts'],
-	migrations: ['../migration/**/*.ts'],
+	entities: ['./src/entity/**/*{.ts,.js}'],
+	migrations: ['./src/migration/**/*{.ts,.js}'],
 });
