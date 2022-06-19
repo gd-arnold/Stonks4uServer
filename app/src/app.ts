@@ -1,17 +1,22 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import 'reflect-metadata';
 import { AppDataSource } from './config/data-source';
 import { connectToDB } from './connect-db';
+import cors from 'cors';
+import { App } from './config/config';
+import authRouter from './routes/auth';
 
-const bootstrapApp = (PORT: number = Number(process.env.PORT)) => {
-	connectToDB().then(async () => await AppDataSource.runMigrations());
+const bootstrapApp = () => {
+	connectToDB();
 
 	const app = express();
 
-	app.get('/', (req: Request, res: Response) => {
-		res.status(200).send({ message: `stonks go brrrr` });
-	});
+	app.use(cors());
+	app.use(express.json());
 
-	app.listen(PORT, () => console.log(`UP & RUNNING ON PORT ${PORT}`));
+	app.use('/auth', authRouter);
+
+	app.listen(App.port, () => console.log(`UP & RUNNING ON PORT ${App.port}`));
 
 	return app;
 };
