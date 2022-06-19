@@ -3,8 +3,8 @@ import 'reflect-metadata';
 import { AppDataSource } from './config/data-source';
 import { connectToDB } from './connect-db';
 import cors from 'cors';
-import userRouter from './routes/user';
 import { App } from './config/config';
+import authRouter from './routes/auth';
 
 const bootstrapApp = () => {
 	connectToDB().then(() => AppDataSource.runMigrations());
@@ -14,7 +14,7 @@ const bootstrapApp = () => {
 	app.use(cors());
 	app.use(express.json());
 
-	app.use('/users', userRouter);
+	app.use('/auth', authRouter);
 
 	app.listen(App.port, () => console.log(`UP & RUNNING ON PORT ${App.port}`));
 

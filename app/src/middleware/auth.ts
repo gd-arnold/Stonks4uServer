@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../service/user';
-
+import { verifyToken } from '../service/auth';
 export const auth = (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authorizationHeader = req.headers.authorization;

@@ -1,15 +1,9 @@
 import { Request, Response } from 'express';
-import { LoginUserDTO, RegisterUserDTO } from '../dto/user';
-import {
-	findUserByEmail,
-	generateToken,
-	hashPassword,
-	isPasswordValid,
-	ITokenPayload,
-	save,
-} from '../service/user';
+import { LoginUserDTO, RegisterUserDTO } from '../dto/auth';
+import { generateToken, hashPassword, isPasswordValid, ITokenPayload } from '../service/auth';
+import { findUserByEmail, save } from '../service/user';
 
-export const createUser = async (req: Request<{}, {}, RegisterUserDTO>, res: Response) => {
+export const register = async (req: Request<{}, {}, RegisterUserDTO>, res: Response) => {
 	const { email, fullName, password } = req.body;
 
 	try {
@@ -32,7 +26,7 @@ export const createUser = async (req: Request<{}, {}, RegisterUserDTO>, res: Res
 	}
 };
 
-export const loginUser = async (req: Request<{}, {}, LoginUserDTO>, res: Response) => {
+export const login = async (req: Request<{}, {}, LoginUserDTO>, res: Response) => {
 	const { email, password } = req.body;
 
 	try {
