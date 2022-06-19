@@ -5,6 +5,7 @@ import {
 	generateToken,
 	hashPassword,
 	isPasswordValid,
+	ITokenPayload,
 	save,
 } from '../service/user';
 
@@ -19,11 +20,11 @@ export const createUser = async (req: Request<{}, {}, RegisterUserDTO>, res: Res
 		const passwordHash = await hashPassword(password);
 		const user = await save({ email, passwordHash, fullName });
 
-		const userPayload = { id: user.id, email: user.email };
-		const token = generateToken(userPayload);
+		const payload: ITokenPayload = { id: user.id, email: user.email };
+		const token = generateToken(payload);
 
 		return res.status(200).json({
-			...userPayload,
+			...payload,
 			token,
 		});
 	} catch (e) {
@@ -44,11 +45,11 @@ export const loginUser = async (req: Request<{}, {}, LoginUserDTO>, res: Respons
 			return res.status(401).json({ message: 'Invalid password.' });
 		}
 
-		const userPayload = { id: user.id, email: user.email };
-		const token = generateToken(userPayload);
+		const payload: ITokenPayload = { id: user.id, email: user.email };
+		const token = generateToken(payload);
 
 		return res.status(200).json({
-			...userPayload,
+			...payload,
 			token,
 		});
 	} catch (e) {

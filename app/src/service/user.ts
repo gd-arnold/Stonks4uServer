@@ -5,9 +5,14 @@ import jwt from 'jsonwebtoken';
 
 const UserRepository = AppDataSource.getRepository(User);
 
-export const generateToken = (data: any) => {
+export interface ITokenPayload {
+	id: number;
+	email: string;
+}
+
+export const generateToken = (payload: ITokenPayload) => {
 	const secretKey = process.env.JWT_SECRET_KEY as string;
-	const token = jwt.sign(data, secretKey);
+	const token = jwt.sign(payload, secretKey);
 
 	return token;
 };
