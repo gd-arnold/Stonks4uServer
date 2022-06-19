@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "cross-env NODE_ENV=production node build/index.js",
 		"build": "rm -rf ./build && tsc",
-		"dev": "cross-env NODE_ENV=dev nodemon src/index.ts",
+		"dev": "cross-env NODE_ENV=dev nodemon --files src/index.ts",
 		"format": "prettier --ignore-path .gitignore --write ./**/*.{ts,json}",
 		"typeorm": "typeorm-ts-node-esm",
 		"migration:generate": "typeorm-ts-node-esm migration:generate -d src/config/data-source.ts",

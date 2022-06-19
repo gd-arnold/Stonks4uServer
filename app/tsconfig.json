@@ -19,6 +19,9 @@
 		/* Type Checking */
 		"strict": true,
 		"strictPropertyInitialization": false /* Check for class properties that are declared but not set in the constructor. */,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+
+		/* Type Definitions */
+		"typeRoots": ["./types", "./node_modules/@types"]
 	}
 }
