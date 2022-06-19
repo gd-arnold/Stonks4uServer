@@ -7,7 +7,7 @@ import { App } from './config/config';
 import authRouter from './routes/auth';
 
 const bootstrapApp = () => {
-	connectToDB().then(() => AppDataSource.runMigrations());
+	connectToDB();
 
 	const app = express();
 
