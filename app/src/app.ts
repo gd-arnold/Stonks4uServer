@@ -6,8 +6,8 @@ import cors from 'cors';
 import { App } from './config/config';
 import authRouter from './routes/auth';
 
-const bootstrapApp = () => {
-	connectToDB();
+const bootstrapApp = async () => {
+	await connectToDB();
 
 	const app = express();
 
