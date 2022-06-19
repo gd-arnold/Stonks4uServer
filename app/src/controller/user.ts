@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import { LoginUserDTO, RegisterUserDTO } from '../dto/user';
-import { findUserByEmail, hashPassword, isPasswordValid, save } from '../service/user';
+import {
+	findUserByEmail,
+	generateToken,
+	hashPassword,
+	isPasswordValid,
+	save,
+} from '../service/user';
 
 export const createUser = async (req: Request<{}, {}, RegisterUserDTO>, res: Response) => {
 	const { email, fullName, password } = req.body;
@@ -32,7 +38,13 @@ export const loginUser = async (req: Request<{}, {}, LoginUserDTO>, res: Respons
 			return res.status(401).json({ message: 'Invalid password.' });
 		}
 
-		return res.status(200).json({ message: 'Successful login.' });
+		const userPayload = { id: user.id, email: user.email };
+		const token = generateToken(userPayload);
+
+		return res.status(200).json({
+			...userPayload,
+			token,
+		});
 	} catch (e) {
 		res.send(500).send({ e });
 	}
