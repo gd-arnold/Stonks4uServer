@@ -17,6 +17,6 @@ export const AppDataSource = new DataSource({
 				ca: DB.certificate.toString(),
 		  }
 		: false,
-	entities: [__dirname + './src/entity/**/*{.ts,.js}'],
-	migrations: [__dirname + './src/migration/**/*{.ts,.js}'],
+	entities: [`${__dirname}/../entity/**/*{.ts,.js}`],
+	migrations: [`${__dirname}/../migration/**/*{.ts,.js}`],
 });
