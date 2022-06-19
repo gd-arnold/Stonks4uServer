@@ -17,9 +17,15 @@ export const createUser = async (req: Request<{}, {}, RegisterUserDTO>, res: Res
 		}
 
 		const passwordHash = await hashPassword(password);
-		await save({ email, passwordHash, fullName });
+		const user = await save({ email, passwordHash, fullName });
 
-		res.status(201).json({ message: 'User is successfully created.' });
+		const userPayload = { id: user.id, email: user.email };
+		const token = generateToken(userPayload);
+
+		return res.status(200).json({
+			...userPayload,
+			token,
+		});
 	} catch (e) {
 		res.send(500).send({ e });
 	}
