@@ -2,6 +2,7 @@ import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { JWT } from '../config/config';
 
 const UserRepository = AppDataSource.getRepository(User);
 
@@ -11,15 +12,13 @@ export interface ITokenPayload {
 }
 
 export const generateToken = (payload: ITokenPayload) => {
-	const secretKey = process.env.JWT_SECRET_KEY as string;
-	const token = jwt.sign(payload, secretKey);
+	const token = jwt.sign(payload, JWT.key);
 
 	return token;
 };
 
 export const verifyToken = (token: string) => {
-	const secretKey = process.env.JWT_SECRET_KEY as string;
-	const decodedToken = jwt.verify(token, secretKey);
+	const decodedToken = jwt.verify(token, JWT.key);
 
 	return decodedToken;
 };

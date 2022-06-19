@@ -4,8 +4,9 @@ import { AppDataSource } from './config/data-source';
 import { connectToDB } from './connect-db';
 import cors from 'cors';
 import userRouter from './routes/user';
+import { App } from './config/config';
 
-const bootstrapApp = (PORT: number = Number(process.env.PORT)) => {
+const bootstrapApp = () => {
 	connectToDB().then(() => AppDataSource.runMigrations());
 
 	const app = express();
@@ -15,7 +16,7 @@ const bootstrapApp = (PORT: number = Number(process.env.PORT)) => {
 
 	app.use('/users', userRouter);
 
-	app.listen(PORT, () => console.log(`UP & RUNNING ON PORT ${PORT}`));
+	app.listen(App.port, () => console.log(`UP & RUNNING ON PORT ${App.port}`));
 
 	return app;
 };
