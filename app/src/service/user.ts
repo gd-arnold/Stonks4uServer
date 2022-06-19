@@ -17,6 +17,13 @@ export const generateToken = (payload: ITokenPayload) => {
 	return token;
 };
 
+export const verifyToken = (token: string) => {
+	const secretKey = process.env.JWT_SECRET_KEY as string;
+	const decodedToken = jwt.verify(token, secretKey);
+
+	return decodedToken;
+};
+
 export const hashPassword = async (password: string, saltRounds: number = 10) => {
 	const salt = await bcrypt.genSalt(saltRounds);
 	const hash = await bcrypt.hash(password, salt);
