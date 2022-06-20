@@ -1,5 +1,29 @@
+import 'dotenv/config';
+import { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import { User } from '../../../entity/user';
-import { hashPassword, isPasswordValid } from '../../../service/auth';
+import {
+	generateToken,
+	hashPassword,
+	isPasswordValid,
+	ITokenPayload,
+	verifyToken,
+} from '../../../service/auth';
+
+describe('JWT token generation and verification flow', () => {
+	const validPayload: ITokenPayload = { id: 1, email: 'valid@test.com' };
+	const token = generateToken(validPayload);
+
+	test('returns payload for valid token', () => {
+		const payload = verifyToken(token) as JwtPayload;
+
+		expect(payload.id).toEqual(validPayload.id);
+		expect(payload.email).toEqual(validPayload.email);
+	});
+
+	test('throws an error for tempered token', () => {
+		expect(() => verifyToken(`bad_${token}`)).toThrow(JsonWebTokenError);
+	});
+});
 
 describe('Password hashing and validation flow', () => {
 	const validPassword = '123456';
