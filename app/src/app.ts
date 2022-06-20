@@ -1,14 +1,11 @@
 import express from 'express';
 import 'reflect-metadata';
-import { AppDataSource } from './config/data-source';
 import { connectToDB } from './connect-db';
 import cors from 'cors';
 import { App } from './config/config';
 import authRouter from './routes/auth';
 
-const bootstrapApp = async () => {
-	await connectToDB();
-
+export const createApp = () => {
 	const app = express();
 
 	app.use(cors());
@@ -16,9 +13,15 @@ const bootstrapApp = async () => {
 
 	app.use('/auth', authRouter);
 
+	return app;
+};
+
+export const bootstrapApp = async () => {
+	await connectToDB();
+
+	const app = createApp();
+
 	app.listen(App.port, () => console.log(`UP & RUNNING ON PORT ${App.port}`));
 
 	return app;
 };
-
-export default bootstrapApp;
