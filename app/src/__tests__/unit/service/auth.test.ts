@@ -16,8 +16,8 @@ describe('JWT token generation and verification flow', () => {
 	test('returns payload for valid token', () => {
 		const payload = verifyToken(token) as JwtPayload;
 
-		expect(payload.id).toEqual(validPayload.id);
-		expect(payload.email).toEqual(validPayload.email);
+		expect(payload.id).toBe(validPayload.id);
+		expect(payload.email).toBe(validPayload.email);
 	});
 
 	test('throws an error for tempered token', () => {

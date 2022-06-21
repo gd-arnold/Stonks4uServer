@@ -41,7 +41,7 @@ describe('User service suite', () => {
 		const notFoundUser = await findUserByEmail('invalid');
 
 		(Object.keys(testUser) as Array<keyof typeof testUser>).forEach((key) => {
-			expect(foundUser[key]).toBe(testUser[key]);
+			expect(foundUser[key]).toEqual(testUser[key]);
 		});
 
 		expect(notFoundUser).toBe(null);
