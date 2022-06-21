@@ -5,7 +5,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 		const authorizationHeader = req.headers.authorization;
 
 		if (!authorizationHeader) {
-			return res.status(401).send({ message: 'No auth token found. Authorization denied.' });
+			return res.status(401).json({ message: 'No auth token found. Authorization denied.' });
 		}
 
 		const token = authorizationHeader.replace(/^Bearer\s/, '');
