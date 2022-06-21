@@ -1,6 +1,6 @@
 import express from 'express';
 import 'reflect-metadata';
-import { connectToDB } from './connect-db';
+import { connectToDB } from './db';
 import cors from 'cors';
 import { App } from './config/config';
 import authRouter from './routes/auth';
