@@ -7,10 +7,7 @@ import { findUserByEmail, save } from '../../../service/user';
 describe('User service suite', () => {
 	beforeAll(async () => {
 		await connectToDB();
-		await resetDB();
-		createApp();
 	});
-
 	afterAll(async () => {
 		await resetDB();
 		await AppDataSource.destroy();

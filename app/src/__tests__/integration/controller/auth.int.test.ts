@@ -11,10 +11,7 @@ import { buildResponse } from '../../utils/express.utils';
 describe('Auth controller suite', () => {
 	beforeAll(async () => {
 		await connectToDB();
-		await resetDB();
-		createApp();
 	});
-
 	afterAll(async () => {
 		await resetDB();
 		await AppDataSource.destroy();
@@ -30,27 +27,20 @@ describe('Auth controller suite', () => {
 			...loginUserDTO,
 			fullName: 'Test Test',
 		};
-
 		return { repo, registerUserDTO, loginUserDTO };
 	};
-
 	const buildPayload = async (email: string) => {
 		const { repo } = setup();
 		const user = await repo.findOneBy({ email: email });
 		const payload = { id: user!.id, email: user!.email } as ITokenPayload;
-
 		return { user, payload };
 	};
-
 	describe('Register user suite', () => {
 		test('Saves user in database and generates JWT token', async () => {
 			const { repo, registerUserDTO } = setup();
-
 			const req = { body: registerUserDTO } as Request;
 			const res = buildResponse();
-
 			await register(req, res);
-
 			const { user, payload } = await buildPayload(registerUserDTO.email);
 			expect(user).not.toBe(null);
 			expect(res.status).toHaveBeenCalledWith(200);
@@ -58,13 +48,10 @@ describe('Auth controller suite', () => {
 			expect(res.json).toHaveBeenCalledWith({ ...payload, token: generateToken(payload) });
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
-
 		test("Doesn't register user if the email is already taken", async () => {
 			const { registerUserDTO } = setup();
-
 			const req = { body: registerUserDTO } as Request;
 			const res = buildResponse();
-
 			await register(req, res);
 			expect(res.status).toHaveBeenCalledWith(409);
 			expect(res.status).toHaveBeenCalledTimes(1);
@@ -75,10 +62,8 @@ describe('Auth controller suite', () => {
 	describe('Login user suite', () => {
 		test("Doesn't login user with inexistent email", async () => {
 			const { loginUserDTO } = setup();
-
 			const req = { body: { ...loginUserDTO, email: 'invalid@i.com' } } as Request;
 			const res = buildResponse();
-
 			await login(req, res);
 			expect(res.status).toHaveBeenCalledWith(401);
 			expect(res.status).toHaveBeenCalledTimes(1);
@@ -87,22 +72,18 @@ describe('Auth controller suite', () => {
 		});
 		test("Doesn't login user with wrong password", async () => {
 			const { loginUserDTO } = setup();
-
 			const req = { body: { ...loginUserDTO, password: 'invalid12' } } as Request;
 			const res = buildResponse();
-
 			await login(req, res);
 			expect(res.status).toHaveBeenCalledWith(401);
 			expect(res.status).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledWith({ message: 'Invalid password.' });
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
-
 		test('Generates JWT token on successful login', async () => {
 			const { loginUserDTO } = setup();
 			const req = { body: loginUserDTO } as Request;
 			const res = buildResponse();
-
 			await login(req, res);
 			const { payload } = await buildPayload(loginUserDTO.email);
 			expect(res.status).toHaveBeenCalledWith(200);
