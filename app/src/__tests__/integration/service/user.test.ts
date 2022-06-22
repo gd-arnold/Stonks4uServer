@@ -13,6 +13,7 @@ describe('User service suite', () => {
 
 	afterAll(async () => {
 		await resetDB();
+		await AppDataSource.destroy();
 	});
 
 	const setup = () => {

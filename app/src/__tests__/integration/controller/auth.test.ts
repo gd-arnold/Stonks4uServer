@@ -17,6 +17,7 @@ describe('Auth controller suite', () => {
 
 	afterAll(async () => {
 		await resetDB();
+		await AppDataSource.destroy();
 	});
 
 	const setup = () => {
