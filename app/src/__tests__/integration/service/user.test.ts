@@ -11,6 +11,10 @@ describe('User service suite', () => {
 		createApp();
 	});
 
+	afterAll(async () => {
+		await resetDB();
+	});
+
 	const setup = () => {
 		const repo = AppDataSource.getRepository(User);
 

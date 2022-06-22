@@ -1,18 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../../../middleware/auth';
 import { generateToken, ITokenPayload } from '../../../service/auth';
+import { buildResponse } from '../../utils/express.utils';
 
 describe('Auth middleware suite', () => {
-	const buildResponse = (overrides?: Object) => {
-		const res = {
-			json: jest.fn((body: Object) => res) as any,
-			status: jest.fn((code: number) => res) as any,
-			...overrides,
-		} as Response;
-
-		return res;
-	};
-
 	test('Returns authorization denied when no authorization header is present', () => {
 		const req = {
 			headers: {},
