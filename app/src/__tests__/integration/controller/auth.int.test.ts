@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { createApp } from '../../../app';
 import { AppDataSource } from '../../../config/data-source';
 import { login, register } from '../../../controller/auth';
-import { connectToDB, resetDB } from '../../../db';
+import Database from '../../../db';
 import { LoginUserDTO, RegisterUserDTO } from '../../../dto/auth';
 import { User } from '../../../entity/user';
 import { generateToken, ITokenPayload } from '../../../service/auth';
@@ -10,11 +10,11 @@ import { buildResponse } from '../../utils/express.utils';
 
 describe('Auth controller suite', () => {
 	beforeAll(async () => {
-		await connectToDB();
+		await Database.connect();
 	});
 	afterAll(async () => {
-		await resetDB();
-		await AppDataSource.destroy();
+		await Database.reset();
+		await Database.disconnect();
 	});
 
 	const setup = () => {

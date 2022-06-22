@@ -1,6 +1,6 @@
 import express from 'express';
 import 'reflect-metadata';
-import { connectToDB } from './db';
+import Database from './db';
 import cors from 'cors';
 import { App } from './config/config';
 import authRouter from './routes/auth';
@@ -17,7 +17,7 @@ export const createApp = () => {
 };
 
 export const bootstrapApp = async () => {
-	await connectToDB();
+	await Database.connect();
 
 	const app = createApp();
 

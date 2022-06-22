@@ -1,16 +1,16 @@
 import { createApp } from '../../../app';
 import { AppDataSource } from '../../../config/data-source';
-import { connectToDB, resetDB } from '../../../db';
+import Database from '../../../db';
 import { User } from '../../../entity/user';
 import { findUserByEmail, save } from '../../../service/user';
 
 describe('User service suite', () => {
 	beforeAll(async () => {
-		await connectToDB();
+		await Database.connect();
 	});
 	afterAll(async () => {
-		await resetDB();
-		await AppDataSource.destroy();
+		await Database.reset();
+		await Database.disconnect();
 	});
 
 	const setup = () => {
