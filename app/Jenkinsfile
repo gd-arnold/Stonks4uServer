@@ -17,7 +17,8 @@ pipeline {
     stage('Build') {
       steps {
         setBuildStatus("Building", "PENDING");
-
+        
+        sh 'mv /home/jenkins/.env ./app'
         sh 'npm install --prefix ./app/'
       }
     }
@@ -25,7 +26,6 @@ pipeline {
       steps {
         setBuildStatus("Testing", "PENDING");
 
-        sh 'mv /home/jenkins/.env ./app'
         sh 'npm run --prefix ./app/ test'
       }
     }
@@ -38,8 +38,7 @@ pipeline {
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
         sh 'docker push geopog/stonks4u-server'
 
-        sshagent(['prod-root']) { 
-          sh 'mv /home/jenkins/.env ./app'       
+        sshagent(['prod-root']) {      
           sh 'docker context create prod --docker "host=ssh://root@138.68.91.235"'
           sh 'docker-compose --context prod -f ./app/docker-compose.yaml pull'
           sh 'docker-compose --context prod -f ./app/docker-compose.yaml up --force-recreate -d'
