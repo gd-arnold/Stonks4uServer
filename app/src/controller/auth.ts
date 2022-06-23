@@ -22,7 +22,7 @@ export const register = async (req: Request<{}, {}, RegisterUserDTO>, res: Respo
 			token,
 		});
 	} catch (e) {
-		res.status(500).send({ e });
+		res.status(500).json({ e });
 	}
 };
 
@@ -47,6 +47,6 @@ export const login = async (req: Request<{}, {}, LoginUserDTO>, res: Response) =
 			token,
 		});
 	} catch (e) {
-		res.status(500).send({ e });
+		res.status(500).json({ e });
 	}
 };
