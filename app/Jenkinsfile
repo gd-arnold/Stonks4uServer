@@ -14,18 +14,22 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('geopog-dockerhub')
   }
   stages {
-    stage('Deploy') {
+    stage('Build') {
       steps {
         setBuildStatus("Building", "PENDING");
 
         sh 'mv /home/jenkins/.env ./app'  
         sh 'npm install --prefix ./app/'
       }
+    }
+    stage('Test') {
       steps {
         setBuildStatus("Testing", "PENDING");
 
         sh 'npm run --prefix ./app/ test'
       }
+    }
+    stage('Deploy') {
       steps {
         setBuildStatus("Deploying", "PENDING");
 
