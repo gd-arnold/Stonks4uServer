@@ -14,22 +14,27 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('geopog-dockerhub')
   }
   stages {
-    stage('Deploy image to Dockerhub') {
+    stage('Deploy') {
       steps {
-        setBuildStatus("Deploying image to dockerhub", "PENDING");
+        setBuildStatus("Building", "PENDING");
+
+        sh 'mv /home/jenkins/.env ./app'  
+        sh 'npm install --prefix ./app/'
+      }
+      steps {
+        setBuildStatus("Testing", "PENDING");
+
+        sh 'npm run --prefix ./app/ test'
+      }
+      steps {
+        setBuildStatus("Deploying", "PENDING");
 
         sh 'docker build -t geopog/stonks4u-server ./app'
         sh 'docker image prune --force'
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
         sh 'docker push geopog/stonks4u-server'
-      }
-    }
-    stage('Deploy to Production') {
-      steps {
-        setBuildStatus("Deploying to production", "PENDING");
 
-        sshagent(['prod-root']) {
-          sh 'mv /home/jenkins/.env ./app'
+        sshagent(['prod-root']) {        
           sh 'docker context create prod --docker "host=ssh://root@138.68.91.235"'
           sh 'docker-compose --context prod -f ./app/docker-compose.yaml pull'
           sh 'docker-compose --context prod -f ./app/docker-compose.yaml up --force-recreate -d'
@@ -40,10 +45,10 @@ pipeline {
   }
   post {
     success {
-      setBuildStatus("Build complete", "SUCCESS");
+      setBuildStatus("CI/CD complete", "SUCCESS");
     }
     failure {
-      setBuildStatus("Build failed", "FAILURE")
+      setBuildStatus("CI/CD failed", "FAILURE")
     }
     always {
       sh 'docker logout'
