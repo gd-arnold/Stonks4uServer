@@ -13,7 +13,8 @@
 		"typeorm": "typeorm-ts-node-esm",
 		"migration:generate": "typeorm-ts-node-esm migration:generate -d src/config/data-source.ts",
 		"migration:up": "typeorm-ts-node-esm migration:run -d src/config/data-source.ts",
-		"migration:down": "typeorm-ts-node-esm migration:revert -d src/config/data-source.ts"
+		"migration:down": "typeorm-ts-node-esm migration:revert -d src/config/data-source.ts",
+		"migration:create": "typeorm-ts-node-esm migration:create"
 	},
 	"repository": {
 		"type": "git",
