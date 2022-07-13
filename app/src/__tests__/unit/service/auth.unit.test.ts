@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
-import { User } from '../../../entity/user';
+import { User } from '../../../entity/User';
 import {
 	generateToken,
 	hashPassword,
 	isPasswordValid,
 	ITokenPayload,
 	verifyToken,
-} from '../../../service/auth';
+} from '../../../service/Auth';
 
 describe('JWT token generation and verification flow', () => {
 	const validPayload: ITokenPayload = { id: 1, email: 'valid@test.com' };

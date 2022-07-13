@@ -1,8 +1,8 @@
 import { createApp } from '../../../app';
 import { AppDataSource } from '../../../config/data-source';
 import Database from '../../../db';
-import { User } from '../../../entity/user';
-import { findUserByEmail, save } from '../../../service/user';
+import { User } from '../../../entity/User';
+import { findUserByEmail, save } from '../../../service/User';
 
 describe('User service suite', () => {
 	beforeAll(async () => {

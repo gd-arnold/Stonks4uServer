@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { User } from '../entity/user';
+import { User } from '../entity/User';
 import { JWT } from '../config/config';
 
 export interface ITokenPayload {

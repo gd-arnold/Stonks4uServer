@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { LoginUserDTO, RegisterUserDTO } from '../dto/auth';
-import { generateToken, hashPassword, isPasswordValid, ITokenPayload } from '../service/auth';
-import { findUserByEmail, save } from '../service/user';
+import { LoginUserDTO, RegisterUserDTO } from '../dto/Auth';
+import { generateToken, hashPassword, isPasswordValid, ITokenPayload } from '../service/Auth';
+import { findUserByEmail, save } from '../service/User';
 
 export const register = async (req: Request<{}, {}, RegisterUserDTO>, res: Response) => {
 	const { email, fullName, password } = req.body;

@@ -1,11 +1,11 @@
 import { Request } from 'express';
 import { createApp } from '../../../app';
 import { AppDataSource } from '../../../config/data-source';
-import { login, register } from '../../../controller/auth';
+import { login, register } from '../../../controller/Auth';
 import Database from '../../../db';
-import { LoginUserDTO, RegisterUserDTO } from '../../../dto/auth';
-import { User } from '../../../entity/user';
-import { generateToken, ITokenPayload } from '../../../service/auth';
+import { LoginUserDTO, RegisterUserDTO } from '../../../dto/Auth';
+import { User } from '../../../entity/User';
+import { generateToken, ITokenPayload } from '../../../service/Auth';
 import { buildResponse } from '../../utils/express.utils';
 
 describe('Auth controller suite', () => {

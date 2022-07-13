@@ -1,6 +1,6 @@
 import express from 'express';
-import { register, login } from '../controller/auth';
-import { LoginUserDTO, RegisterUserDTO } from '../dto/auth';
+import { register, login } from '../controller/Auth';
+import { LoginUserDTO, RegisterUserDTO } from '../dto/Auth';
 import validate from '../middleware/validate';
 
 const authRouter = express.Router();

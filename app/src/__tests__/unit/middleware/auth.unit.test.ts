@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../../../middleware/auth';
-import { generateToken, ITokenPayload } from '../../../service/auth';
+import { generateToken, ITokenPayload } from '../../../service/Auth';
 import { buildResponse } from '../../utils/express.utils';
 
 describe('Auth middleware suite', () => {

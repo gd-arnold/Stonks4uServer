@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { LoginUserDTO, RegisterUserDTO } from '../../../../dto/auth';
+import { LoginUserDTO, RegisterUserDTO } from '../../../../dto/Auth';
 import { buildResponse } from '../../../utils/express.utils';
 import validate from '../../../../middleware/validate';
 

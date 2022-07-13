@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import Database from './db';
 import cors from 'cors';
 import { App } from './config/config';
-import authRouter from './routes/auth';
+import authRouter from './routes/Auth';
 
 export const createApp = () => {
 	const app = express();
