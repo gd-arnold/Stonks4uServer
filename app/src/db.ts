@@ -16,7 +16,7 @@ const Database = {
 
 			for (const entity of entities) {
 				const repository = AppDataSource.getRepository(entity.name);
-				await repository.clear();
+				await repository.query(`TRUNCATE ${entity.tableName} RESTART IDENTITY CASCADE;`);
 			}
 
 			return true;
