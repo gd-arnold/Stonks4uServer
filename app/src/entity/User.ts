@@ -2,9 +2,11 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { StatementCategory } from './StatementCategory';
 
 @Entity('users')
 export class User {
@@ -19,6 +21,9 @@ export class User {
 
 	@Column()
 	passwordHash: string;
+
+	@OneToMany(() => StatementCategory, (category) => category.user)
+	statementCategories: StatementCategory[];
 
 	@CreateDateColumn()
 	createdAt: Date;
