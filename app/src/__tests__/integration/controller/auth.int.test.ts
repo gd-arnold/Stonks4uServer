@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { createApp } from '../../../app';
 import { AppDataSource } from '../../../config/data-source';
-import { login, register } from '../../../controller/Auth';
+import { AuthController } from '../../../controller/Auth';
 import Database from '../../../db';
 import { LoginUserDTO, RegisterUserDTO } from '../../../dto/Auth';
 import { User } from '../../../entity/User';
@@ -40,7 +40,7 @@ describe('Auth controller suite', () => {
 			const { repo, registerUserDTO } = setup();
 			const req = { body: registerUserDTO } as Request;
 			const res = buildResponse();
-			await register(req, res);
+			await AuthController.register(req, res);
 			const { user, payload } = await buildPayload(registerUserDTO.email);
 			expect(user).not.toBe(null);
 			expect(res.status).toHaveBeenCalledWith(200);
@@ -52,7 +52,7 @@ describe('Auth controller suite', () => {
 			const { registerUserDTO } = setup();
 			const req = { body: registerUserDTO } as Request;
 			const res = buildResponse();
-			await register(req, res);
+			await AuthController.register(req, res);
 			expect(res.status).toHaveBeenCalledWith(409);
 			expect(res.status).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledWith({ message: 'User already exists.' });
@@ -64,7 +64,7 @@ describe('Auth controller suite', () => {
 			const { loginUserDTO } = setup();
 			const req = { body: { ...loginUserDTO, email: 'invalid@i.com' } } as Request;
 			const res = buildResponse();
-			await login(req, res);
+			await AuthController.login(req, res);
 			expect(res.status).toHaveBeenCalledWith(401);
 			expect(res.status).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledWith({ message: "User doesn't exist." });
@@ -74,7 +74,7 @@ describe('Auth controller suite', () => {
 			const { loginUserDTO } = setup();
 			const req = { body: { ...loginUserDTO, password: 'invalid12' } } as Request;
 			const res = buildResponse();
-			await login(req, res);
+			await AuthController.login(req, res);
 			expect(res.status).toHaveBeenCalledWith(401);
 			expect(res.status).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledWith({ message: 'Invalid password.' });
@@ -84,7 +84,7 @@ describe('Auth controller suite', () => {
 			const { loginUserDTO } = setup();
 			const req = { body: loginUserDTO } as Request;
 			const res = buildResponse();
-			await login(req, res);
+			await AuthController.login(req, res);
 			const { payload } = await buildPayload(loginUserDTO.email);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.status).toHaveBeenCalledTimes(1);
