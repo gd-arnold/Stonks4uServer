@@ -41,10 +41,14 @@ const StatementCategoriesData: Partial<StatementCategory>[] = [
 ];
 
 export class seedStatementCategoriesTable1657720356477 implements MigrationInterface {
+	name = 'seedStatementCategoriesTable1657720356477';
+
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		const StatementCategoryRepository = AppDataSource.getRepository(StatementCategory);
 
-		await StatementCategoryRepository.save(StatementCategoriesData);
+		StatementCategoriesData.forEach(async (category) => {
+			await StatementCategoryRepository.save(category);
+		});
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {}
