@@ -1,8 +1,0 @@
-version: '3'
-services:
-  test-postgres-db:
-    image: postgres:14
-    ports:
-      - 127.0.0.1:${POSTGRES_LOCAL_PORT}:${POSTGRES_PORT}
-    env_file:
-      - .env

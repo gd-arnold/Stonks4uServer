@@ -6,15 +6,12 @@ export const App = {
 };
 
 export const DB = {
-	host: App.environment === 'test' ? process.env.POSTGRES_HOST : process.env.DB_HOST,
-	port:
-		App.environment === 'test'
-			? Number(process.env.POSTGRES_LOCAL_PORT)
-			: Number(process.env.DB_PORT),
-	username: App.environment === 'test' ? process.env.POSTGRES_USER : process.env.DB_USERNAME,
-	password: App.environment === 'test' ? process.env.POSTGRES_PASSWORD : process.env.DB_PASSWORD,
-	database: App.environment === 'test' ? process.env.POSTGRES_DB : process.env.DB_NAME,
-	certificate: App.environment === 'test' ? undefined : process.env.DB_CA_CERT,
+	host: process.env.DB_HOST,
+	port: Number(process.env.DB_PORT),
+	username: process.env.DB_USERNAME,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_NAME,
+	certificate: process.env.DB_CA_CERT,
 };
 
 export const JWT = {

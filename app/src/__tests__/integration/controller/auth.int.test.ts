@@ -1,20 +1,27 @@
 import { Request } from 'express';
-import { createApp } from '../../../app';
+import { PostgreSqlContainer, StartedPostgreSqlContainer } from 'testcontainers';
 import { AppDataSource } from '../../../config/data-source';
 import { AuthController } from '../../../controller/Auth';
 import Database from '../../../db';
 import { LoginUserDTO, RegisterUserDTO } from '../../../dto/Auth';
 import { User } from '../../../entity/User';
 import { generateToken, ITokenPayload } from '../../../service/Auth';
+import { TestDBContainer } from '../../utils/dbcontainer.utils';
 import { buildResponse } from '../../utils/express.utils';
 
 describe('Auth controller suite', () => {
+	jest.setTimeout(180000);
+
+	const dbContainer = new TestDBContainer();
+
 	beforeAll(async () => {
+		await dbContainer.start();
 		await Database.connect();
 	});
+
 	afterAll(async () => {
-		await Database.reset();
 		await Database.disconnect();
+		await dbContainer.stop();
 	});
 
 	const setup = () => {

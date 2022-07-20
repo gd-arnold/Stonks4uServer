@@ -1,16 +1,22 @@
-import { createApp } from '../../../app';
 import { AppDataSource } from '../../../config/data-source';
 import Database from '../../../db';
 import { User } from '../../../entity/User';
 import { findUserByEmail, save } from '../../../service/User';
+import { TestDBContainer } from '../../utils/dbcontainer.utils';
 
 describe('User service suite', () => {
+	jest.setTimeout(180000);
+
+	const dbContainer = new TestDBContainer();
+
 	beforeAll(async () => {
+		await dbContainer.start();
 		await Database.connect();
 	});
+
 	afterAll(async () => {
-		await Database.reset();
 		await Database.disconnect();
+		await dbContainer.stop();
 	});
 
 	const setup = () => {
