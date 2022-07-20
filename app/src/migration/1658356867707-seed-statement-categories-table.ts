@@ -1,8 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { AppDataSource } from '../config/data-source';
 import { StatementCategory } from '../entity/StatementCategory';
 
-const StatementCategoriesData: Partial<StatementCategory>[] = [
+const categories: Partial<StatementCategory>[] = [
 	{ name: 'Auto & Transport', type: 'expense', user: undefined },
 	{ name: 'Bills & Utilities', type: 'expense', user: undefined },
 	{ name: 'Business Services', type: 'expense', user: undefined },
@@ -40,15 +39,9 @@ const StatementCategoriesData: Partial<StatementCategory>[] = [
 	{ name: 'Commisions', type: 'income', user: undefined },
 ];
 
-export class seedStatementCategoriesTable1657720356477 implements MigrationInterface {
-	name = 'seedStatementCategoriesTable1657720356477';
-
+export class seedStatementCategoriesTable1658356867707 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
-		const StatementCategoryRepository = AppDataSource.getRepository(StatementCategory);
-
-		StatementCategoriesData.forEach(async (category) => {
-			await StatementCategoryRepository.save(category);
-		});
+		await queryRunner.manager.insert(StatementCategory, categories);
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {}
