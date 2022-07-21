@@ -11,7 +11,7 @@ import { StatementCategory } from './StatementCategory';
 @Entity('users')
 export class User {
 	@PrimaryGeneratedColumn('uuid')
-	id: number;
+	id: string;
 
 	@Column()
 	fullName: string;

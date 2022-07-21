@@ -1,5 +1,5 @@
 interface IUserPayload {
-	id: number;
+	id: string;
 	email: string;
 }
 

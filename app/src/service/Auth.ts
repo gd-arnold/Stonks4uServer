@@ -4,7 +4,7 @@ import { User } from '../entity/User';
 import { JWT } from '../config/config';
 
 export interface ITokenPayload {
-	id: number;
+	id: string;
 	email: string;
 }
 

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../../../middleware/auth';
 import { generateToken, ITokenPayload } from '../../../service/Auth';
@@ -40,7 +41,7 @@ describe('Auth middleware suite', () => {
 	});
 	test('Sets userPayload as a property on request and calls next middleware on valid JWT token', () => {
 		const payload: ITokenPayload = {
-			id: 1,
+			id: randomUUID(),
 			email: 'test',
 		};
 
