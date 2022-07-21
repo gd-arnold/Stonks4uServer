@@ -23,7 +23,7 @@ export const AuthController = {
 				token,
 			});
 		} catch (e) {
-			res.status(500).json({ e });
+			return res.status(500).json({ e });
 		}
 	},
 
@@ -48,7 +48,7 @@ export const AuthController = {
 				token,
 			});
 		} catch (e) {
-			res.status(500).json({ e });
+			return res.status(500).json({ e });
 		}
 	},
 };
