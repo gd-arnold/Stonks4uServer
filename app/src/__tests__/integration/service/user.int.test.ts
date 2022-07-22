@@ -1,7 +1,8 @@
+import { randomUUID } from 'crypto';
 import { AppDataSource } from '../../../config/data-source';
 import Database from '../../../db';
 import { User } from '../../../entity/User';
-import { findUserByEmail, save } from '../../../service/User';
+import { findUserByEmail, findUserById, save } from '../../../service/User';
 import { TestDBContainer } from '../../utils/dbcontainer.utils';
 
 describe('User service suite', () => {
@@ -19,23 +20,18 @@ describe('User service suite', () => {
 		await dbContainer.stop();
 	});
 
-	const setup = () => {
-		const repo = AppDataSource.getRepository(User);
-
-		const testUser = {
-			email: 'test@test.com',
-			fullName: 'Test Test',
-			passwordHash: 'test',
-		};
-
-		return { testUser, repo };
+	const repo = AppDataSource.getRepository(User);
+	const testUser = {
+		email: 'test@test.com',
+		fullName: 'Test Test',
+		passwordHash: 'test',
 	};
+	let savedUser: User;
 
 	test('Saves user in database', async () => {
-		const { testUser, repo } = setup();
 		await save(testUser);
 
-		const savedUser = (await repo.findOneBy({ email: testUser.email })) as User;
+		savedUser = (await repo.findOneBy({ email: testUser.email })) as User;
 
 		(Object.keys(testUser) as Array<keyof typeof testUser>).forEach((key) => {
 			expect(savedUser[key]).toBe(testUser[key]);
@@ -43,13 +39,22 @@ describe('User service suite', () => {
 	});
 
 	test('Finds user by email', async () => {
-		const { testUser } = setup();
-
-		const foundUser = (await findUserByEmail(testUser.email)) as User;
+		const foundUser = (await findUserByEmail(savedUser.email)) as User;
 		const notFoundUser = await findUserByEmail('invalid');
 
-		(Object.keys(testUser) as Array<keyof typeof testUser>).forEach((key) => {
-			expect(foundUser[key]).toEqual(testUser[key]);
+		(Object.keys(savedUser) as Array<keyof typeof savedUser>).forEach((key) => {
+			expect(foundUser[key]).toEqual(savedUser[key]);
+		});
+
+		expect(notFoundUser).toBe(null);
+	});
+
+	test('Finds user by id', async () => {
+		const foundUser = (await findUserById(savedUser.id)) as User;
+		const notFoundUser = await findUserById(randomUUID());
+
+		(Object.keys(savedUser) as Array<keyof typeof savedUser>).forEach((key) => {
+			expect(foundUser[key]).toEqual(savedUser[key]);
 		});
 
 		expect(notFoundUser).toBe(null);

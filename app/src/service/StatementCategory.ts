@@ -17,3 +17,10 @@ export const getDefaultStatementCategories = async (type?: StatementCategoryType
 	const defaultCategories = await defaultCategoriesQuery.getMany();
 	return defaultCategories;
 };
+
+export const save = async (input: Partial<StatementCategory>) => {
+	const category = StatementCategoryRepository.create(input);
+	await StatementCategoryRepository.save(category);
+
+	return true;
+};

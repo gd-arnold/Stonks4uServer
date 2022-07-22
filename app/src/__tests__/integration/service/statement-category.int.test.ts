@@ -11,10 +11,19 @@ describe('Statement category service suite', () => {
 	jest.setTimeout(180000);
 
 	const dbContainer = new TestDBContainer();
+	let testUser: User = {} as User;
+	let testCategory: Partial<StatementCategory> = {};
 
 	beforeAll(async () => {
 		await dbContainer.start();
 		await Database.connect();
+		testUser = await generateUser();
+		testCategory = {
+			id: randomUUID(),
+			name: 'test',
+			type: 'income',
+			user: testUser,
+		};
 	});
 
 	afterAll(async () => {
@@ -23,6 +32,20 @@ describe('Statement category service suite', () => {
 	});
 
 	const repo = AppDataSource.getRepository(StatementCategory);
+
+	test('Saves category in database', async () => {
+		await save(testCategory);
+
+		const savedCategory = (await repo
+			.createQueryBuilder('statement_categories')
+			.leftJoinAndSelect('statement_categories.user', 'users')
+			.where('statement_categories.id = :id', { id: testCategory.id })
+			.getOne()) as StatementCategory;
+
+		(Object.keys(testCategory) as Array<keyof typeof testCategory>).forEach((key) => {
+			expect(savedCategory[key]).toEqual(testCategory[key]);
+		});
+	});
 
 	test('Gets default statement categories', async () => {
 		const defaultCategoriesQuery = repo
