@@ -35,21 +35,21 @@ describe('Statement category controller suite', () => {
 
 	const setup = () => {
 		const repo = AppDataSource.getRepository(StatementCategory);
-
-		return { repo };
-	};
-
-	describe('Create custom category suite', () => {
-		let testIncomeCategoryDTO: StatementCategoryDTO = {
+		const testIncomeCategoryDTO: StatementCategoryDTO = {
 			name: 'TestI',
 			type: 'income',
 		};
-		let testExpenseCategoryDTO: StatementCategoryDTO = {
+		const testExpenseCategoryDTO: StatementCategoryDTO = {
 			name: 'TestE',
 			type: 'expense',
 		};
+		return { repo, testIncomeCategoryDTO, testExpenseCategoryDTO };
+	};
 
+	describe('Create custom category suite', () => {
 		test("Doesn't create category on invalid user id", async () => {
+			const { testIncomeCategoryDTO } = setup();
+
 			const req = {
 				params: { userId: 'invalid' },
 				body: testIncomeCategoryDTO,
@@ -65,7 +65,7 @@ describe('Statement category controller suite', () => {
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 		test('Successfully creates custom category', async () => {
-			const { repo } = setup();
+			const { repo, testIncomeCategoryDTO, testExpenseCategoryDTO } = setup();
 
 			[testIncomeCategoryDTO, testExpenseCategoryDTO].forEach(async (category) => {
 				const req = { params: { userId: testUser.id }, body: category, userPayload } as any;

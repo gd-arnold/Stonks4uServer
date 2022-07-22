@@ -12,7 +12,7 @@ export const StatementCategoryController = {
 		default: {
 			all: async (req: Request, res: Response) => {
 				try {
-					const categories = await StatementCategoryService.getDefaultStatementCategories();
+					const categories = await StatementCategoryService.getDefaultCategories();
 
 					return res.status(200).json({
 						categories,
@@ -23,7 +23,7 @@ export const StatementCategoryController = {
 			},
 			income: async (req: Request, res: Response) => {
 				try {
-					const categories = await StatementCategoryService.getDefaultStatementCategories('income');
+					const categories = await StatementCategoryService.getDefaultCategories('income');
 
 					return res.status(200).json({
 						categories,
@@ -34,9 +34,7 @@ export const StatementCategoryController = {
 			},
 			expense: async (req: Request, res: Response) => {
 				try {
-					const categories = await StatementCategoryService.getDefaultStatementCategories(
-						'expense'
-					);
+					const categories = await StatementCategoryService.getDefaultCategories('expense');
 
 					return res.status(200).json({
 						categories,

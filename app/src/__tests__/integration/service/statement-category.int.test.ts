@@ -12,18 +12,13 @@ describe('Statement category service suite', () => {
 
 	const dbContainer = new TestDBContainer();
 	let testUser: User = {} as User;
-	let testCategory: Partial<StatementCategory> = {};
+	let savedIncomeCategory: StatementCategory;
+	let savedExpenseCategory: StatementCategory;
 
 	beforeAll(async () => {
 		await dbContainer.start();
 		await Database.connect();
 		testUser = await generateUser();
-		testCategory = {
-			id: randomUUID(),
-			name: 'test',
-			type: 'income',
-			user: testUser,
-		};
 	});
 
 	afterAll(async () => {
@@ -33,23 +28,44 @@ describe('Statement category service suite', () => {
 
 	const setup = () => {
 		const repo = AppDataSource.getRepository(StatementCategory);
-
-		return { repo };
+		const testIncomeCategory: Partial<StatementCategory> = {
+			id: randomUUID(),
+			name: 'TestI',
+			type: 'income',
+			user: testUser,
+		};
+		const testExpenseCategory: Partial<StatementCategory> = {
+			id: randomUUID(),
+			name: 'TestE',
+			type: 'expense',
+			user: testUser,
+		};
+		return { repo, testIncomeCategory, testExpenseCategory };
 	};
 
 	test('Saves category in database', async () => {
-		const { repo } = setup();
+		const { repo, testIncomeCategory, testExpenseCategory } = setup();
 
-		await StatementCategoryService.save(testCategory);
+		[testIncomeCategory, testExpenseCategory].forEach(async (category) => {
+			await StatementCategoryService.save(category);
 
-		const savedCategory = (await repo
-			.createQueryBuilder('statement_categories')
-			.leftJoinAndSelect('statement_categories.user', 'users')
-			.where('statement_categories.id = :id', { id: testCategory.id })
-			.getOne()) as StatementCategory;
+			const savedCategory = (await repo
+				.createQueryBuilder('statement_categories')
+				.leftJoinAndSelect('statement_categories.user', 'users')
+				.where('statement_categories.id = :id', { id: category.id })
+				.getOne()) as Partial<StatementCategory>;
 
-		(Object.keys(testCategory) as Array<keyof typeof testCategory>).forEach((key) => {
-			expect(savedCategory[key]).toEqual(testCategory[key]);
+			(Object.keys(category) as Array<keyof typeof category>).forEach((key) => {
+				expect(savedCategory[key]).toEqual(category[key]);
+			});
+
+			if (savedCategory.type === 'income') {
+				delete savedCategory.user;
+				savedIncomeCategory = savedCategory as StatementCategory;
+			} else {
+				delete savedCategory.user;
+				savedExpenseCategory = savedCategory as StatementCategory;
+			}
 		});
 	});
 
@@ -60,18 +76,31 @@ describe('Statement category service suite', () => {
 			.createQueryBuilder('statement_categories')
 			.where('statement_categories.userId IS NULL');
 
-		expect(await StatementCategoryService.getDefaultStatementCategories()).toEqual(
+		expect(await StatementCategoryService.getDefaultCategories()).toEqual(
 			await defaultCategoriesQuery.getMany()
 		);
-		expect(await StatementCategoryService.getDefaultStatementCategories('income')).toEqual(
+		expect(await StatementCategoryService.getDefaultCategories('income')).toEqual(
 			await defaultCategoriesQuery
 				.andWhere('statement_categories.type = :type', { type: 'income' })
 				.getMany()
 		);
-		expect(await StatementCategoryService.getDefaultStatementCategories('expense')).toEqual(
+		expect(await StatementCategoryService.getDefaultCategories('expense')).toEqual(
 			await defaultCategoriesQuery
 				.andWhere('statement_categories.type = :type', { type: 'expense' })
 				.getMany()
 		);
+	});
+
+	test('Gets custom statement categories', async () => {
+		expect(await StatementCategoryService.getCustomCategories(testUser.id)).toEqual([
+			savedIncomeCategory,
+			savedExpenseCategory,
+		]);
+		expect(await StatementCategoryService.getCustomCategories(testUser.id, 'income')).toEqual([
+			savedIncomeCategory,
+		]);
+		expect(await StatementCategoryService.getCustomCategories(testUser.id, 'expense')).toEqual([
+			savedExpenseCategory,
+		]);
 	});
 });
