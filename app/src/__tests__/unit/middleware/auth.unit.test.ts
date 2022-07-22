@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../../../middleware/auth';
-import { generateToken, ITokenPayload } from '../../../service/Auth';
+import { AuthService, ITokenPayload } from '../../../service/Auth';
 import { buildResponse } from '../../utils/express.utils';
 
 describe('Auth middleware suite', () => {
@@ -46,7 +46,7 @@ describe('Auth middleware suite', () => {
 		};
 
 		const req = {
-			headers: { authorization: generateToken(payload) },
+			headers: { authorization: AuthService.generateToken(payload) },
 			userPayload: {} as IUserPayload,
 		} as Request;
 

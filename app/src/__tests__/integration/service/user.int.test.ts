@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { AppDataSource } from '../../../config/data-source';
 import Database from '../../../db';
 import { User } from '../../../entity/User';
-import { findUserByEmail, findUserById, save } from '../../../service/User';
+import { UserService } from '../../../service/User';
 import { TestDBContainer } from '../../utils/dbcontainer.utils';
 
 describe('User service suite', () => {
@@ -35,7 +35,7 @@ describe('User service suite', () => {
 	test('Saves user in database', async () => {
 		const { repo, testUser } = setup();
 
-		await save(testUser);
+		await UserService.save(testUser);
 
 		savedUser = (await repo.findOneBy({ email: testUser.email })) as User;
 
@@ -45,8 +45,8 @@ describe('User service suite', () => {
 	});
 
 	test('Finds user by email', async () => {
-		const foundUser = (await findUserByEmail(savedUser.email)) as User;
-		const notFoundUser = await findUserByEmail('invalid');
+		const foundUser = (await UserService.findUserByEmail(savedUser.email)) as User;
+		const notFoundUser = await UserService.findUserByEmail('invalid');
 
 		(Object.keys(savedUser) as Array<keyof typeof savedUser>).forEach((key) => {
 			expect(foundUser[key]).toEqual(savedUser[key]);
@@ -56,8 +56,8 @@ describe('User service suite', () => {
 	});
 
 	test('Finds user by id', async () => {
-		const foundUser = (await findUserById(savedUser.id)) as User;
-		const notFoundUser = await findUserById(randomUUID());
+		const foundUser = (await UserService.findUserById(savedUser.id)) as User;
+		const notFoundUser = await UserService.findUserById(randomUUID());
 
 		(Object.keys(savedUser) as Array<keyof typeof savedUser>).forEach((key) => {
 			expect(foundUser[key]).toEqual(savedUser[key]);

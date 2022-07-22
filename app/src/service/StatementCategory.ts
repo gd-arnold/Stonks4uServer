@@ -3,24 +3,28 @@ import { StatementCategory, StatementCategoryTypeType } from '../entity/Statemen
 
 const StatementCategoryRepository = AppDataSource.getRepository(StatementCategory);
 
-export const getDefaultStatementCategories = async (type?: StatementCategoryTypeType) => {
-	let defaultCategoriesQuery = StatementCategoryRepository.createQueryBuilder(
-		'statement_categories'
-	).where('statement_categories.userId IS NULL');
+export const StatementCategoryService = {
+	getDefaultStatementCategories: async (type?: StatementCategoryTypeType) => {
+		let defaultCategoriesQuery = StatementCategoryRepository.createQueryBuilder(
+			'statement_categories'
+		).where('statement_categories.userId IS NULL');
 
-	if (typeof type !== 'undefined') {
-		defaultCategoriesQuery = defaultCategoriesQuery.andWhere('statement_categories.type = :type', {
-			type,
-		});
-	}
+		if (typeof type !== 'undefined') {
+			defaultCategoriesQuery = defaultCategoriesQuery.andWhere(
+				'statement_categories.type = :type',
+				{
+					type,
+				}
+			);
+		}
 
-	const defaultCategories = await defaultCategoriesQuery.getMany();
-	return defaultCategories;
-};
+		const defaultCategories = await defaultCategoriesQuery.getMany();
+		return defaultCategories;
+	},
+	save: async (input: Partial<StatementCategory>) => {
+		const category = StatementCategoryRepository.create(input);
+		await StatementCategoryRepository.save(category);
 
-export const save = async (input: Partial<StatementCategory>) => {
-	const category = StatementCategoryRepository.create(input);
-	await StatementCategoryRepository.save(category);
-
-	return true;
+		return true;
+	},
 };

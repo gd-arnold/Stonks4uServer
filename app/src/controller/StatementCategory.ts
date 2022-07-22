@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { StatementCategoryDTO } from '../dto/StatementCategory';
 import { User } from '../entity/User';
-import { getDefaultStatementCategories, save } from '../service/StatementCategory';
-import { findUserById } from '../service/User';
+import { StatementCategoryService } from '../service/StatementCategory';
+import { UserService } from '../service/User';
 
 export const StatementCategoryController = {
 	get: {
@@ -12,7 +12,7 @@ export const StatementCategoryController = {
 		default: {
 			all: async (req: Request, res: Response) => {
 				try {
-					const categories = await getDefaultStatementCategories();
+					const categories = await StatementCategoryService.getDefaultStatementCategories();
 
 					return res.status(200).json({
 						categories,
@@ -23,7 +23,7 @@ export const StatementCategoryController = {
 			},
 			income: async (req: Request, res: Response) => {
 				try {
-					const categories = await getDefaultStatementCategories('income');
+					const categories = await StatementCategoryService.getDefaultStatementCategories('income');
 
 					return res.status(200).json({
 						categories,
@@ -34,7 +34,9 @@ export const StatementCategoryController = {
 			},
 			expense: async (req: Request, res: Response) => {
 				try {
-					const categories = await getDefaultStatementCategories('expense');
+					const categories = await StatementCategoryService.getDefaultStatementCategories(
+						'expense'
+					);
 
 					return res.status(200).json({
 						categories,
@@ -60,10 +62,10 @@ export const StatementCategoryController = {
 				return res.status(401).json({ message: 'Invalid operation.' });
 			}
 
-			const user = (await findUserById(id)) as User;
+			const user = (await UserService.findUserById(id)) as User;
 			const category = { name, type, user };
 
-			await save(category);
+			await StatementCategoryService.save(category);
 			return res.status(201).json({ message: 'The category is successully created.' });
 		} catch (e) {
 			return res.status(500).json({ e });

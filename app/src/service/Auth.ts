@@ -8,25 +8,24 @@ export interface ITokenPayload {
 	email: string;
 }
 
-export const generateToken = (payload: ITokenPayload) => {
-	const token = jwt.sign(payload, JWT.key);
+export const AuthService = {
+	generateToken: (payload: ITokenPayload) => {
+		const token = jwt.sign(payload, JWT.key);
 
-	return token;
-};
+		return token;
+	},
+	verifyToken: (token: string) => {
+		const decodedToken = jwt.verify(token, JWT.key);
 
-export const verifyToken = (token: string) => {
-	const decodedToken = jwt.verify(token, JWT.key);
+		return decodedToken;
+	},
+	hashPassword: async (password: string, saltRounds: number = 10) => {
+		const salt = await bcrypt.genSalt(saltRounds);
+		const hash = await bcrypt.hash(password, salt);
 
-	return decodedToken;
-};
-
-export const hashPassword = async (password: string, saltRounds: number = 10) => {
-	const salt = await bcrypt.genSalt(saltRounds);
-	const hash = await bcrypt.hash(password, salt);
-
-	return hash;
-};
-
-export const isPasswordValid = async (password: string, user: User) => {
-	return await bcrypt.compare(password, user.passwordHash);
+		return hash;
+	},
+	isPasswordValid: async (password: string, user: User) => {
+		return await bcrypt.compare(password, user.passwordHash);
+	},
 };

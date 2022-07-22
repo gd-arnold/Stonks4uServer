@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../service/Auth';
+import { AuthService } from '../service/Auth';
 export const auth = (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const authorizationHeader = req.headers.authorization;
@@ -11,7 +11,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 		const token = authorizationHeader.replace(/^Bearer\s/, '');
 
 		try {
-			req.userPayload = verifyToken(token) as IUserPayload;
+			req.userPayload = AuthService.verifyToken(token) as IUserPayload;
 			next();
 		} catch (e: any) {
 			res.status(401).json({ message: 'Token verification failed.' });

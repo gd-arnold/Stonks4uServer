@@ -5,7 +5,7 @@ import { AuthController } from '../../../controller/Auth';
 import Database from '../../../db';
 import { LoginUserDTO, RegisterUserDTO } from '../../../dto/Auth';
 import { User } from '../../../entity/User';
-import { generateToken, ITokenPayload } from '../../../service/Auth';
+import { AuthService, ITokenPayload } from '../../../service/Auth';
 import { TestDBContainer } from '../../utils/dbcontainer.utils';
 import { buildResponse } from '../../utils/express.utils';
 
@@ -52,7 +52,10 @@ describe('Auth controller suite', () => {
 			expect(user).not.toBe(null);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.status).toHaveBeenCalledTimes(1);
-			expect(res.json).toHaveBeenCalledWith({ ...payload, token: generateToken(payload) });
+			expect(res.json).toHaveBeenCalledWith({
+				...payload,
+				token: AuthService.generateToken(payload),
+			});
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 		test("Doesn't register user if the email is already taken", async () => {
@@ -95,7 +98,10 @@ describe('Auth controller suite', () => {
 			const { payload } = await buildPayload(loginUserDTO.email);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.status).toHaveBeenCalledTimes(1);
-			expect(res.json).toHaveBeenCalledWith({ ...payload, token: generateToken(payload) });
+			expect(res.json).toHaveBeenCalledWith({
+				...payload,
+				token: AuthService.generateToken(payload),
+			});
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 	});
