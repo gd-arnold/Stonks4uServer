@@ -103,4 +103,30 @@ describe('Statement category service suite', () => {
 			savedExpenseCategory,
 		]);
 	});
+
+	test('Gets all statement categories', async () => {
+		const { repo } = setup();
+
+		const defaultCategoriesQuery = repo
+			.createQueryBuilder('statement_categories')
+			.where('statement_categories.userId IS NULL');
+
+		expect(await StatementCategoryService.getCategories(testUser.id)).toEqual([
+			...(await defaultCategoriesQuery.getMany()),
+			savedIncomeCategory,
+			savedExpenseCategory,
+		]);
+		expect(await StatementCategoryService.getCategories(testUser.id, 'income')).toEqual([
+			...(await defaultCategoriesQuery
+				.andWhere('statement_categories.type = :type', { type: 'income' })
+				.getMany()),
+			savedIncomeCategory,
+		]);
+		expect(await StatementCategoryService.getCategories(testUser.id, 'expense')).toEqual([
+			...(await defaultCategoriesQuery
+				.andWhere('statement_categories.type = :type', { type: 'expense' })
+				.getMany()),
+			savedExpenseCategory,
+		]);
+	});
 });

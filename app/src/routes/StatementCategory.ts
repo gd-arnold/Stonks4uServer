@@ -24,8 +24,8 @@ StatementCategoryRouter.get(
 );
 
 StatementCategoryRouter.get('/:userId', StatementCategoryController.get.all);
-StatementCategoryRouter.get('/income/:userId', StatementCategoryController.get.income);
-StatementCategoryRouter.get('/expense/:userId', StatementCategoryController.get.expense);
+StatementCategoryRouter.get('/:userId/income', StatementCategoryController.get.income);
+StatementCategoryRouter.get('/:userId/expense', StatementCategoryController.get.expense);
 
 // POST
 StatementCategoryRouter.post(

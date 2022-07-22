@@ -227,4 +227,109 @@ describe('Statement category controller suite', () => {
 			});
 		});
 	});
+
+	describe('Get categories suite', () => {
+		describe('All categories suite', () => {
+			test("Doesn't return categories on invalid user id", async () => {
+				const req = { params: { userId: 'invalid' }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.all(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(401);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+			test('Returns categories by user id', async () => {
+				const { repo } = setup();
+
+				const req = { params: { userId: testUser.id }, userPayload } as any;
+				const res = buildResponse();
+				await StatementCategoryController.get.all(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({
+					categories: [
+						...(await repo
+							.createQueryBuilder('statement_categories')
+							.where('statement_categories.userId IS NULL')
+							.getMany()),
+						savedIncomeCategory,
+						savedExpenseCategory,
+					],
+				});
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+		});
+		describe('All income categories suite', () => {
+			test("Doesn't return categories on invalid user id", async () => {
+				const req = { params: { userId: 'invalid' }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.income(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(401);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+			test('Returns categories by user id', async () => {
+				const { repo } = setup();
+
+				const req = { params: { userId: testUser.id }, userPayload } as any;
+				const res = buildResponse();
+				await StatementCategoryController.get.income(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({
+					categories: [
+						...(await repo
+							.createQueryBuilder('statement_categories')
+							.where('statement_categories.userId IS NULL')
+							.andWhere('statement_categories.type = :type', { type: 'income' })
+							.getMany()),
+						savedIncomeCategory,
+					],
+				});
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+		});
+		describe('All expense categories suite', () => {
+			test("Doesn't return categories on invalid user id", async () => {
+				const req = { params: { userId: 'invalid' }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.expense(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(401);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+			test('Returns categories by user id', async () => {
+				const { repo } = setup();
+
+				const req = { params: { userId: testUser.id }, userPayload } as any;
+				const res = buildResponse();
+				await StatementCategoryController.get.expense(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({
+					categories: [
+						...(await repo
+							.createQueryBuilder('statement_categories')
+							.where('statement_categories.userId IS NULL')
+							.andWhere('statement_categories.type = :type', { type: 'expense' })
+							.getMany()),
+						savedExpenseCategory,
+					],
+				});
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+		});
+	});
 });

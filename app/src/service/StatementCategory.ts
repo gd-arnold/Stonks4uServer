@@ -1,3 +1,4 @@
+import { Brackets } from 'typeorm';
 import { AppDataSource } from '../config/data-source';
 import { StatementCategory, StatementCategoryTypeType } from '../entity/StatementCategory';
 
@@ -23,6 +24,27 @@ export const StatementCategoryService = {
 		let customCategoriesQuery = StatementCategoryRepository.createQueryBuilder(
 			'statement_categories'
 		).where('statement_categories.userId = :userId', { userId });
+
+		if (typeof type !== 'undefined') {
+			customCategoriesQuery = customCategoriesQuery.andWhere('statement_categories.type = :type', {
+				type,
+			});
+		}
+
+		const customCategories = await customCategoriesQuery.getMany();
+		return customCategories;
+	},
+	getCategories: async (userId: string, type?: StatementCategoryTypeType) => {
+		let customCategoriesQuery = StatementCategoryRepository.createQueryBuilder(
+			'statement_categories'
+		).where(
+			new Brackets((qb) => {
+				qb.where('statement_categories.userId = :userId', { userId }).orWhere(
+					'statement_categories.userId IS NULL',
+					{ userId }
+				);
+			})
+		);
 
 		if (typeof type !== 'undefined') {
 			customCategoriesQuery = customCategoriesQuery.andWhere('statement_categories.type = :type', {

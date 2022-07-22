@@ -6,9 +6,51 @@ import { UserService } from '../service/User';
 
 export const StatementCategoryController = {
 	get: {
-		all: () => {},
-		income: () => {},
-		expense: () => {},
+		all: async (req: Request, res: Response) => {
+			try {
+				const { userId } = req.params;
+				const { id } = req.userPayload;
+
+				if (id !== userId) {
+					return res.status(401).json({ message: 'Invalid operation.' });
+				}
+
+				const categories = await StatementCategoryService.getCategories(id);
+				return res.status(200).json({ categories });
+			} catch (e) {
+				return res.status(500).json({ e });
+			}
+		},
+		income: async (req: Request, res: Response) => {
+			try {
+				const { userId } = req.params;
+				const { id } = req.userPayload;
+
+				if (id !== userId) {
+					return res.status(401).json({ message: 'Invalid operation.' });
+				}
+
+				const categories = await StatementCategoryService.getCategories(id, 'income');
+				return res.status(200).json({ categories });
+			} catch (e) {
+				return res.status(500).json({ e });
+			}
+		},
+		expense: async (req: Request, res: Response) => {
+			try {
+				const { userId } = req.params;
+				const { id } = req.userPayload;
+
+				if (id !== userId) {
+					return res.status(401).json({ message: 'Invalid operation.' });
+				}
+
+				const categories = await StatementCategoryService.getCategories(id, 'expense');
+				return res.status(200).json({ categories });
+			} catch (e) {
+				return res.status(500).json({ e });
+			}
+		},
 		default: {
 			all: async (req: Request, res: Response) => {
 				try {
