@@ -67,7 +67,7 @@ describe('Statement category controller suite', () => {
 		test('Successfully creates custom category', async () => {
 			const { repo, testIncomeCategoryDTO, testExpenseCategoryDTO } = setup();
 
-			[testIncomeCategoryDTO, testExpenseCategoryDTO].forEach(async (category) => {
+			for (const category of [testIncomeCategoryDTO, testExpenseCategoryDTO]) {
 				const req = { params: { userId: testUser.id }, body: category, userPayload } as any;
 				const res = buildResponse();
 
@@ -77,10 +77,17 @@ describe('Statement category controller suite', () => {
 				expect(res.status).toHaveBeenCalledTimes(1);
 				expect(res.json).toHaveBeenCalledWith({ message: 'The category is successully created.' });
 				expect(res.json).toHaveBeenCalledTimes(1);
+			}
 
-				savedIncomeCategory = repo.create(testIncomeCategoryDTO);
-				savedExpenseCategory = repo.create(testExpenseCategoryDTO);
-			});
+			savedIncomeCategory = (await repo
+				.createQueryBuilder('statement_categories')
+				.where('statement_categories.name = :name', { name: testIncomeCategoryDTO.name })
+				.getOne()) as StatementCategory;
+
+			savedExpenseCategory = (await repo
+				.createQueryBuilder('statement_categories')
+				.where('statement_categories.name = :name', { name: testExpenseCategoryDTO.name })
+				.getOne()) as StatementCategory;
 		});
 	});
 
@@ -137,6 +144,87 @@ describe('Statement category controller suite', () => {
 					.getMany(),
 			});
 			expect(res.json).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('Get custom categories suite', () => {
+		describe('All custom categories suite', () => {
+			test("Doesn't return categories on invalid user id", async () => {
+				const req = { params: { userId: 'invalid' }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.custom.all(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(401);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+			test('Returns categories by user id', async () => {
+				const req = { params: { userId: testUser.id }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.custom.all(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({
+					categories: [savedIncomeCategory, savedExpenseCategory],
+				});
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+		});
+		describe('Income custom categories suite', () => {
+			test("Doesn't return categories on invalid user id", async () => {
+				const req = { params: { userId: 'invalid' }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.custom.income(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(401);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+			test('Returns categories by user id', async () => {
+				const req = { params: { userId: testUser.id }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.custom.income(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({
+					categories: [savedIncomeCategory],
+				});
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+		});
+		describe('Expense custom categories suite', () => {
+			test("Doesn't return categories on invalid user id", async () => {
+				const req = { params: { userId: 'invalid' }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.custom.expense(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(401);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
+			test('Returns categories by user id', async () => {
+				const req = { params: { userId: testUser.id }, userPayload } as any;
+				const res = buildResponse();
+
+				await StatementCategoryController.get.custom.expense(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.status).toHaveBeenCalledTimes(1);
+				expect(res.json).toHaveBeenCalledWith({
+					categories: [savedExpenseCategory],
+				});
+				expect(res.json).toHaveBeenCalledTimes(1);
+			});
 		});
 	});
 });

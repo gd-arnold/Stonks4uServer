@@ -46,7 +46,7 @@ describe('Statement category service suite', () => {
 	test('Saves category in database', async () => {
 		const { repo, testIncomeCategory, testExpenseCategory } = setup();
 
-		[testIncomeCategory, testExpenseCategory].forEach(async (category) => {
+		for (const category of [testIncomeCategory, testExpenseCategory]) {
 			await StatementCategoryService.save(category);
 
 			const savedCategory = (await repo
@@ -66,7 +66,7 @@ describe('Statement category service suite', () => {
 				delete savedCategory.user;
 				savedExpenseCategory = savedCategory as StatementCategory;
 			}
-		});
+		}
 	});
 
 	test('Gets default statement categories', async () => {

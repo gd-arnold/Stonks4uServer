@@ -14,9 +14,7 @@ export const StatementCategoryController = {
 				try {
 					const categories = await StatementCategoryService.getDefaultCategories();
 
-					return res.status(200).json({
-						categories,
-					});
+					return res.status(200).json({ categories });
 				} catch (e) {
 					return res.status(500).json({ e });
 				}
@@ -25,9 +23,7 @@ export const StatementCategoryController = {
 				try {
 					const categories = await StatementCategoryService.getDefaultCategories('income');
 
-					return res.status(200).json({
-						categories,
-					});
+					return res.status(200).json({ categories });
 				} catch (e) {
 					return res.status(500).json({ e });
 				}
@@ -36,18 +32,58 @@ export const StatementCategoryController = {
 				try {
 					const categories = await StatementCategoryService.getDefaultCategories('expense');
 
-					return res.status(200).json({
-						categories,
-					});
+					return res.status(200).json({ categories });
 				} catch (e) {
 					return res.status(500).json({ e });
 				}
 			},
 		},
 		custom: {
-			all: () => {},
-			income: () => {},
-			expense: () => {},
+			all: async (req: Request, res: Response) => {
+				try {
+					const { userId } = req.params;
+					const { id } = req.userPayload;
+
+					if (id !== userId) {
+						return res.status(401).json({ message: 'Invalid operation.' });
+					}
+
+					const categories = await StatementCategoryService.getCustomCategories(id);
+					return res.status(200).json({ categories });
+				} catch (e) {
+					return res.status(500).json({ e });
+				}
+			},
+			income: async (req: Request, res: Response) => {
+				try {
+					const { userId } = req.params;
+					const { id } = req.userPayload;
+
+					if (id !== userId) {
+						return res.status(401).json({ message: 'Invalid operation.' });
+					}
+
+					const categories = await StatementCategoryService.getCustomCategories(id, 'income');
+					return res.status(200).json({ categories });
+				} catch (e) {
+					return res.status(500).json({ e });
+				}
+			},
+			expense: async (req: Request, res: Response) => {
+				try {
+					const { userId } = req.params;
+					const { id } = req.userPayload;
+
+					if (id !== userId) {
+						return res.status(401).json({ message: 'Invalid operation.' });
+					}
+
+					const categories = await StatementCategoryService.getCustomCategories(id, 'expense');
+					return res.status(200).json({ categories });
+				} catch (e) {
+					return res.status(500).json({ e });
+				}
+			},
 		},
 	},
 	post: async (req: Request<{ userId: string }, {}, StatementCategoryDTO>, res: Response) => {
