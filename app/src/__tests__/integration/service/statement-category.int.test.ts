@@ -31,9 +31,15 @@ describe('Statement category service suite', () => {
 		await dbContainer.stop();
 	});
 
-	const repo = AppDataSource.getRepository(StatementCategory);
+	const setup = () => {
+		const repo = AppDataSource.getRepository(StatementCategory);
+
+		return { repo };
+	};
 
 	test('Saves category in database', async () => {
+		const { repo } = setup();
+
 		await save(testCategory);
 
 		const savedCategory = (await repo
@@ -48,6 +54,8 @@ describe('Statement category service suite', () => {
 	});
 
 	test('Gets default statement categories', async () => {
+		const { repo } = setup();
+
 		const defaultCategoriesQuery = repo
 			.createQueryBuilder('statement_categories')
 			.where('statement_categories.userId IS NULL');

@@ -9,6 +9,7 @@ describe('User service suite', () => {
 	jest.setTimeout(180000);
 
 	const dbContainer = new TestDBContainer();
+	let savedUser: User;
 
 	beforeAll(async () => {
 		await dbContainer.start();
@@ -20,15 +21,20 @@ describe('User service suite', () => {
 		await dbContainer.stop();
 	});
 
-	const repo = AppDataSource.getRepository(User);
-	const testUser = {
-		email: 'test@test.com',
-		fullName: 'Test Test',
-		passwordHash: 'test',
+	const setup = () => {
+		const repo = AppDataSource.getRepository(User);
+		const testUser = {
+			email: 'test@test.com',
+			fullName: 'Test Test',
+			passwordHash: 'test',
+		};
+
+		return { repo, testUser };
 	};
-	let savedUser: User;
 
 	test('Saves user in database', async () => {
+		const { repo, testUser } = setup();
+
 		await save(testUser);
 
 		savedUser = (await repo.findOneBy({ email: testUser.email })) as User;

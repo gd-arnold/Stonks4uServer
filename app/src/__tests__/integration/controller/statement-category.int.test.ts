@@ -33,7 +33,11 @@ describe('Statement category controller suite', () => {
 		await dbContainer.stop();
 	});
 
-	const repo = AppDataSource.getRepository(StatementCategory);
+	const setup = () => {
+		const repo = AppDataSource.getRepository(StatementCategory);
+
+		return { repo };
+	};
 
 	describe('Create custom category suite', () => {
 		let testIncomeCategoryDTO: StatementCategoryDTO = {
@@ -61,6 +65,8 @@ describe('Statement category controller suite', () => {
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 		test('Successfully creates custom category', async () => {
+			const { repo } = setup();
+
 			[testIncomeCategoryDTO, testExpenseCategoryDTO].forEach(async (category) => {
 				const req = { params: { userId: testUser.id }, body: category, userPayload } as any;
 				const res = buildResponse();
@@ -80,6 +86,8 @@ describe('Statement category controller suite', () => {
 
 	describe('Get default categories suite', () => {
 		test('Returns all default categories', async () => {
+			const { repo } = setup();
+
 			const req = {} as Request;
 			const res = buildResponse();
 			await StatementCategoryController.get.default.all(req, res);
@@ -95,6 +103,8 @@ describe('Statement category controller suite', () => {
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 		test('Returns income default categories', async () => {
+			const { repo } = setup();
+
 			const req = {} as Request;
 			const res = buildResponse();
 			await StatementCategoryController.get.default.income(req, res);
@@ -111,6 +121,8 @@ describe('Statement category controller suite', () => {
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 		test('Returns expense default categories', async () => {
+			const { repo } = setup();
+
 			const req = {} as Request;
 			const res = buildResponse();
 			await StatementCategoryController.get.default.expense(req, res);
