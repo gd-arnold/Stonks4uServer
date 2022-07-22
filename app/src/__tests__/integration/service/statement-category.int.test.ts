@@ -1,8 +1,11 @@
+import { randomUUID } from 'crypto';
 import { AppDataSource } from '../../../config/data-source';
 import Database from '../../../db';
 import { StatementCategory } from '../../../entity/StatementCategory';
-import { getDefaultStatementCategories } from '../../../service/StatementCategory';
+import { User } from '../../../entity/User';
+import { getDefaultStatementCategories, save } from '../../../service/StatementCategory';
 import { TestDBContainer } from '../../utils/dbcontainer.utils';
+import { generateUser } from '../../utils/user.utils';
 
 describe('Statement category service suite', () => {
 	jest.setTimeout(180000);
@@ -22,14 +25,20 @@ describe('Statement category service suite', () => {
 	const repo = AppDataSource.getRepository(StatementCategory);
 
 	test('Gets default statement categories', async () => {
-		expect(await getDefaultStatementCategories()).toEqual(
-			await repo.find({ where: { user: undefined } })
-		);
+		const defaultCategoriesQuery = repo
+			.createQueryBuilder('statement_categories')
+			.where('statement_categories.userId IS NULL');
+
+		expect(await getDefaultStatementCategories()).toEqual(await defaultCategoriesQuery.getMany());
 		expect(await getDefaultStatementCategories('income')).toEqual(
-			await repo.find({ where: { user: undefined, type: 'income' } })
+			await defaultCategoriesQuery
+				.andWhere('statement_categories.type = :type', { type: 'income' })
+				.getMany()
 		);
 		expect(await getDefaultStatementCategories('expense')).toEqual(
-			await repo.find({ where: { user: undefined, type: 'expense' } })
+			await defaultCategoriesQuery
+				.andWhere('statement_categories.type = :type', { type: 'expense' })
+				.getMany()
 		);
 	});
 });

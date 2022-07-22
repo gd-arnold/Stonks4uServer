@@ -3,21 +3,17 @@ import { StatementCategory, StatementCategoryTypeType } from '../entity/Statemen
 
 const StatementCategoryRepository = AppDataSource.getRepository(StatementCategory);
 
-interface IDefaultCategoriesConditions {
-	user: undefined;
-	type?: StatementCategoryTypeType;
-}
-
 export const getDefaultStatementCategories = async (type?: StatementCategoryTypeType) => {
-	let conditions: IDefaultCategoriesConditions = {
-		user: undefined,
-	};
+	let defaultCategoriesQuery = StatementCategoryRepository.createQueryBuilder(
+		'statement_categories'
+	).where('statement_categories.userId IS NULL');
 
 	if (typeof type !== 'undefined') {
-		conditions.type = type;
+		defaultCategoriesQuery = defaultCategoriesQuery.andWhere('statement_categories.type = :type', {
+			type,
+		});
 	}
 
-	const defaultCategories = await StatementCategoryRepository.find({ where: conditions });
-
+	const defaultCategories = await defaultCategoriesQuery.getMany();
 	return defaultCategories;
 };
