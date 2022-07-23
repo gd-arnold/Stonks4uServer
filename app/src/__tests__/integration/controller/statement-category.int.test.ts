@@ -95,6 +95,21 @@ describe('Statement category controller suite', () => {
 	describe('Update custom category suite', () => {
 		test("Doesn't update category on invalid category id", async () => {
 			const req = {
+				params: { id: 'invalid' },
+				body: { ...savedExpenseCategory, name: 'TestExpense' },
+				userPayload,
+			} as any;
+			const res = buildResponse();
+
+			await StatementCategoryController.put(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(400);
+			expect(res.status).toHaveBeenCalledTimes(1);
+			expect(res.json).toHaveBeenCalledWith({ message: 'Invalid category id' });
+			expect(res.json).toHaveBeenCalledTimes(1);
+		});
+		test("Doesn't update invalid category", async () => {
+			const req = {
 				params: { id: randomUUID() },
 				body: { ...savedExpenseCategory, name: 'TestExpense' },
 				userPayload,

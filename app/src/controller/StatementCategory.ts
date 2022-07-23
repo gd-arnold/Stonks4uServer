@@ -154,6 +154,10 @@ export const StatementCategoryController = {
 			const userId = req.userPayload.id;
 			const partial = req.body;
 
+			if (!isUUID(categoryId)) {
+				return res.status(400).json({ message: 'Invalid category id' });
+			}
+
 			const category = await StatementCategoryService.getCustomCategory(categoryId, userId);
 
 			if (category === null) {
