@@ -34,4 +34,11 @@ StatementCategoryRouter.post(
 	StatementCategoryController.post
 );
 
+// PUT
+StatementCategoryRouter.put(
+	'/:id',
+	validate(StatementCategoryDTO),
+	StatementCategoryController.put
+);
+
 export default StatementCategoryRouter;

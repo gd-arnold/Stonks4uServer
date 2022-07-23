@@ -8,6 +8,7 @@ import { StatementCategory } from '../../../entity/StatementCategory';
 import { User } from '../../../entity/User';
 import { generateUser } from '../../utils/user.utils';
 import { StatementCategoryDTO } from '../../../dto/StatementCategory';
+import { randomUUID } from 'crypto';
 
 describe('Statement category controller suite', () => {
 	jest.setTimeout(180000);
@@ -88,6 +89,45 @@ describe('Statement category controller suite', () => {
 				.createQueryBuilder('statement_categories')
 				.where('statement_categories.name = :name', { name: testExpenseCategoryDTO.name })
 				.getOne()) as StatementCategory;
+		});
+	});
+
+	describe('Update custom category suite', () => {
+		test("Doesn't update category on invalid category id", async () => {
+			const req = {
+				params: { id: randomUUID() },
+				body: { ...savedExpenseCategory, name: 'TestExpense' },
+				userPayload,
+			} as any;
+			const res = buildResponse();
+
+			await StatementCategoryController.put(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(401);
+			expect(res.status).toHaveBeenCalledTimes(1);
+			expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+			expect(res.json).toHaveBeenCalledTimes(1);
+		});
+		test('Successfully updates custom category', async () => {
+			const { repo } = setup();
+
+			const req = {
+				params: { id: savedExpenseCategory.id },
+				body: { ...savedExpenseCategory, name: 'TestExpense' },
+				userPayload,
+			} as any;
+			const res = buildResponse();
+
+			await StatementCategoryController.put(req, res);
+
+			savedExpenseCategory = (await repo.findOneBy({
+				id: savedExpenseCategory.id,
+			})) as StatementCategory;
+
+			expect(res.status).toHaveBeenCalledWith(204);
+			expect(res.status).toHaveBeenCalledTimes(1);
+			expect(res.send).toHaveBeenCalledTimes(1);
+			expect(res.json).toHaveBeenCalledTimes(0);
 		});
 	});
 

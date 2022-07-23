@@ -1,3 +1,4 @@
+import { isUUID } from 'class-validator';
 import { Request, Response } from 'express';
 import { StatementCategoryDTO } from '../dto/StatementCategory';
 import { User } from '../entity/User';
@@ -143,6 +144,25 @@ export const StatementCategoryController = {
 
 			await StatementCategoryService.save(category);
 			return res.status(201).json({ message: 'The category is successully created.' });
+		} catch (e) {
+			return res.status(500).json({ e });
+		}
+	},
+	put: async (req: Request<{ id: string }, {}, StatementCategoryDTO>, res: Response) => {
+		try {
+			const categoryId = req.params.id;
+			const userId = req.userPayload.id;
+			const partial = req.body;
+
+			const category = await StatementCategoryService.getCustomCategory(categoryId, userId);
+
+			if (category === null) {
+				return res.status(401).json({ message: 'Invalid operation.' });
+			}
+
+			await StatementCategoryService.update(categoryId, partial);
+
+			return res.status(204).send();
 		} catch (e) {
 			return res.status(500).json({ e });
 		}

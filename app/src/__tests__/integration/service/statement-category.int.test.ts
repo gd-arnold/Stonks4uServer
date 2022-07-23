@@ -69,6 +69,37 @@ describe('Statement category service suite', () => {
 		}
 	});
 
+	test('Updates category', async () => {
+		const { repo } = setup();
+
+		const updated = { ...savedExpenseCategory, name: 'TestExpense' };
+
+		await StatementCategoryService.update(savedExpenseCategory.id, {
+			name: updated.name,
+			type: updated.type,
+		});
+
+		savedExpenseCategory = (await repo.findOneBy({
+			id: savedExpenseCategory.id,
+		})) as StatementCategory;
+
+		updated.updatedAt = savedExpenseCategory.updatedAt;
+
+		expect(savedExpenseCategory).toEqual(updated);
+	});
+
+	test('Gets custom category', async () => {
+		expect(await StatementCategoryService.getCustomCategory(randomUUID(), testUser.id)).toEqual(
+			null
+		);
+		expect(
+			await StatementCategoryService.getCustomCategory(savedIncomeCategory.id, randomUUID())
+		).toEqual(null);
+		expect(
+			await StatementCategoryService.getCustomCategory(savedIncomeCategory.id, testUser.id)
+		).toEqual(savedIncomeCategory);
+	});
+
 	test('Gets default statement categories', async () => {
 		const { repo } = setup();
 
