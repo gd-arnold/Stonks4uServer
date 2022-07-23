@@ -74,4 +74,9 @@ export const StatementCategoryService = {
 
 		return true;
 	},
+	delete: async (categoryId: string) => {
+		await StatementCategoryRepository.delete(categoryId);
+
+		return true;
+	},
 };

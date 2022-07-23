@@ -171,4 +171,26 @@ export const StatementCategoryController = {
 			return res.status(500).json({ e });
 		}
 	},
+	delete: async (req: Request, res: Response) => {
+		try {
+			const categoryId = req.params.id;
+			const userId = req.userPayload.id;
+
+			if (!isUUID(categoryId)) {
+				return res.status(400).json({ message: 'Invalid category id' });
+			}
+
+			const category = await StatementCategoryService.getCustomCategory(categoryId, userId);
+
+			if (category === null) {
+				return res.status(401).json({ message: 'Invalid operation.' });
+			}
+
+			await StatementCategoryService.delete(categoryId);
+
+			return res.status(204).send();
+		} catch (e) {
+			return res.status(500).json({ e });
+		}
+	},
 };

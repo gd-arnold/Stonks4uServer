@@ -88,6 +88,21 @@ describe('Statement category service suite', () => {
 		expect(savedExpenseCategory).toEqual(updated);
 	});
 
+	test('Deletes category', async () => {
+		const { repo } = setup();
+
+		await StatementCategoryService.delete(savedExpenseCategory.id);
+
+		expect(await repo.findOneBy({ id: savedExpenseCategory.id })).toBe(null);
+
+		// Restore deleted category
+		savedExpenseCategory.user = testUser;
+		await repo.save(savedExpenseCategory);
+		savedExpenseCategory = (await repo.findOneBy({
+			id: savedExpenseCategory.id,
+		})) as StatementCategory;
+	});
+
 	test('Gets custom category', async () => {
 		expect(await StatementCategoryService.getCustomCategory(randomUUID(), testUser.id)).toEqual(
 			null

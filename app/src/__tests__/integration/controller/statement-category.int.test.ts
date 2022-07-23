@@ -146,6 +146,58 @@ describe('Statement category controller suite', () => {
 		});
 	});
 
+	describe('Delete custom category suite', () => {
+		test("Doesn't delete category on invalid category id", async () => {
+			const req = {
+				params: { id: 'invalid' },
+				body: { ...savedExpenseCategory, name: 'TestExpense' },
+				userPayload,
+			} as any;
+			const res = buildResponse();
+
+			await StatementCategoryController.delete(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(400);
+			expect(res.status).toHaveBeenCalledTimes(1);
+			expect(res.json).toHaveBeenCalledWith({ message: 'Invalid category id' });
+			expect(res.json).toHaveBeenCalledTimes(1);
+		});
+		test("Doesn't delete invalid category", async () => {
+			const req = {
+				params: { id: randomUUID() },
+				body: { ...savedExpenseCategory, name: 'TestExpense' },
+				userPayload,
+			} as any;
+			const res = buildResponse();
+
+			await StatementCategoryController.delete(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(401);
+			expect(res.status).toHaveBeenCalledTimes(1);
+			expect(res.json).toHaveBeenCalledWith({ message: 'Invalid operation.' });
+			expect(res.json).toHaveBeenCalledTimes(1);
+		});
+		test('Successfully deletes custom category', async () => {
+			const { repo } = setup();
+
+			const req = { params: { id: savedExpenseCategory.id }, userPayload } as any;
+			const res = buildResponse();
+
+			await StatementCategoryController.delete(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(204);
+			expect(res.status).toHaveBeenCalledTimes(1);
+			expect(res.send).toHaveBeenCalledTimes(1);
+			expect(res.json).toHaveBeenCalledTimes(0);
+
+			savedExpenseCategory.user = testUser;
+			await repo.save(savedExpenseCategory);
+			savedExpenseCategory = (await repo.findOneBy({
+				id: savedExpenseCategory.id,
+			})) as StatementCategory;
+		});
+	});
+
 	describe('Get default categories suite', () => {
 		test('Returns all default categories', async () => {
 			const { repo } = setup();

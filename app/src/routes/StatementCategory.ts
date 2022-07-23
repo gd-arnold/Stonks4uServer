@@ -41,4 +41,7 @@ StatementCategoryRouter.put(
 	StatementCategoryController.put
 );
 
+// DELETE
+StatementCategoryRouter.delete('/:id', StatementCategoryController.delete);
+
 export default StatementCategoryRouter;
