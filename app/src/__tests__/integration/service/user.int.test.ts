@@ -1,35 +1,43 @@
-import { createApp } from '../../../app';
+import { randomUUID } from 'crypto';
 import { AppDataSource } from '../../../config/data-source';
 import Database from '../../../db';
 import { User } from '../../../entity/User';
-import { findUserByEmail, save } from '../../../service/User';
+import { UserService } from '../../../service/User';
+import { TestDBContainer } from '../../utils/dbcontainer.utils';
 
 describe('User service suite', () => {
+	jest.setTimeout(180000);
+
+	const dbContainer = new TestDBContainer();
+	let savedUser: User;
+
 	beforeAll(async () => {
+		await dbContainer.start();
 		await Database.connect();
 	});
+
 	afterAll(async () => {
-		await Database.reset();
 		await Database.disconnect();
+		await dbContainer.stop();
 	});
 
 	const setup = () => {
 		const repo = AppDataSource.getRepository(User);
-
 		const testUser = {
 			email: 'test@test.com',
 			fullName: 'Test Test',
 			passwordHash: 'test',
 		};
 
-		return { testUser, repo };
+		return { repo, testUser };
 	};
 
 	test('Saves user in database', async () => {
-		const { testUser, repo } = setup();
-		await save(testUser);
+		const { repo, testUser } = setup();
 
-		const savedUser = (await repo.findOneBy({ email: testUser.email })) as User;
+		await UserService.save(testUser);
+
+		savedUser = (await repo.findOneBy({ email: testUser.email })) as User;
 
 		(Object.keys(testUser) as Array<keyof typeof testUser>).forEach((key) => {
 			expect(savedUser[key]).toBe(testUser[key]);
@@ -37,13 +45,22 @@ describe('User service suite', () => {
 	});
 
 	test('Finds user by email', async () => {
-		const { testUser } = setup();
+		const foundUser = (await UserService.findUserByEmail(savedUser.email)) as User;
+		const notFoundUser = await UserService.findUserByEmail('invalid');
 
-		const foundUser = (await findUserByEmail(testUser.email)) as User;
-		const notFoundUser = await findUserByEmail('invalid');
+		(Object.keys(savedUser) as Array<keyof typeof savedUser>).forEach((key) => {
+			expect(foundUser[key]).toEqual(savedUser[key]);
+		});
 
-		(Object.keys(testUser) as Array<keyof typeof testUser>).forEach((key) => {
-			expect(foundUser[key]).toEqual(testUser[key]);
+		expect(notFoundUser).toBe(null);
+	});
+
+	test('Finds user by id', async () => {
+		const foundUser = (await UserService.findUserById(savedUser.id)) as User;
+		const notFoundUser = await UserService.findUserById(randomUUID());
+
+		(Object.keys(savedUser) as Array<keyof typeof savedUser>).forEach((key) => {
+			expect(foundUser[key]).toEqual(savedUser[key]);
 		});
 
 		expect(notFoundUser).toBe(null);

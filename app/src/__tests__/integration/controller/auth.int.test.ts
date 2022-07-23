@@ -1,20 +1,27 @@
 import { Request } from 'express';
-import { createApp } from '../../../app';
+import { PostgreSqlContainer, StartedPostgreSqlContainer } from 'testcontainers';
 import { AppDataSource } from '../../../config/data-source';
-import { login, register } from '../../../controller/Auth';
+import { AuthController } from '../../../controller/Auth';
 import Database from '../../../db';
 import { LoginUserDTO, RegisterUserDTO } from '../../../dto/Auth';
 import { User } from '../../../entity/User';
-import { generateToken, ITokenPayload } from '../../../service/Auth';
+import { AuthService, ITokenPayload } from '../../../service/Auth';
+import { TestDBContainer } from '../../utils/dbcontainer.utils';
 import { buildResponse } from '../../utils/express.utils';
 
 describe('Auth controller suite', () => {
+	jest.setTimeout(180000);
+
+	const dbContainer = new TestDBContainer();
+
 	beforeAll(async () => {
+		await dbContainer.start();
 		await Database.connect();
 	});
+
 	afterAll(async () => {
-		await Database.reset();
 		await Database.disconnect();
+		await dbContainer.stop();
 	});
 
 	const setup = () => {
@@ -40,19 +47,22 @@ describe('Auth controller suite', () => {
 			const { repo, registerUserDTO } = setup();
 			const req = { body: registerUserDTO } as Request;
 			const res = buildResponse();
-			await register(req, res);
+			await AuthController.register(req, res);
 			const { user, payload } = await buildPayload(registerUserDTO.email);
 			expect(user).not.toBe(null);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.status).toHaveBeenCalledTimes(1);
-			expect(res.json).toHaveBeenCalledWith({ ...payload, token: generateToken(payload) });
+			expect(res.json).toHaveBeenCalledWith({
+				...payload,
+				token: AuthService.generateToken(payload),
+			});
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 		test("Doesn't register user if the email is already taken", async () => {
 			const { registerUserDTO } = setup();
 			const req = { body: registerUserDTO } as Request;
 			const res = buildResponse();
-			await register(req, res);
+			await AuthController.register(req, res);
 			expect(res.status).toHaveBeenCalledWith(409);
 			expect(res.status).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledWith({ message: 'User already exists.' });
@@ -64,7 +74,7 @@ describe('Auth controller suite', () => {
 			const { loginUserDTO } = setup();
 			const req = { body: { ...loginUserDTO, email: 'invalid@i.com' } } as Request;
 			const res = buildResponse();
-			await login(req, res);
+			await AuthController.login(req, res);
 			expect(res.status).toHaveBeenCalledWith(401);
 			expect(res.status).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledWith({ message: "User doesn't exist." });
@@ -74,7 +84,7 @@ describe('Auth controller suite', () => {
 			const { loginUserDTO } = setup();
 			const req = { body: { ...loginUserDTO, password: 'invalid12' } } as Request;
 			const res = buildResponse();
-			await login(req, res);
+			await AuthController.login(req, res);
 			expect(res.status).toHaveBeenCalledWith(401);
 			expect(res.status).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledWith({ message: 'Invalid password.' });
@@ -84,11 +94,14 @@ describe('Auth controller suite', () => {
 			const { loginUserDTO } = setup();
 			const req = { body: loginUserDTO } as Request;
 			const res = buildResponse();
-			await login(req, res);
+			await AuthController.login(req, res);
 			const { payload } = await buildPayload(loginUserDTO.email);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.status).toHaveBeenCalledTimes(1);
-			expect(res.json).toHaveBeenCalledWith({ ...payload, token: generateToken(payload) });
+			expect(res.json).toHaveBeenCalledWith({
+				...payload,
+				token: AuthService.generateToken(payload),
+			});
 			expect(res.json).toHaveBeenCalledTimes(1);
 		});
 	});

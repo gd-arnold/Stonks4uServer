@@ -3,7 +3,8 @@ import 'reflect-metadata';
 import Database from './db';
 import cors from 'cors';
 import { App } from './config/config';
-import authRouter from './routes/Auth';
+import AuthRouter from './routes/Auth';
+import StatementCategoryRouter from './routes/StatementCategory';
 
 export const createApp = () => {
 	const app = express();
@@ -11,7 +12,8 @@ export const createApp = () => {
 	app.use(cors());
 	app.use(express.json());
 
-	app.use('/auth', authRouter);
+	app.use('/auth', AuthRouter);
+	app.use('/statement-category', StatementCategoryRouter);
 
 	return app;
 };

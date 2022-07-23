@@ -7,13 +7,14 @@
 		"start": "cross-env NODE_ENV=production node build/index.js",
 		"build": "rm -rf ./build && tsc",
 		"dev": "cross-env NODE_ENV=dev nodemon --files src/index.ts",
-		"test": "docker-compose -f ./docker-compose.test.yaml down && docker-compose -f ./docker-compose.test.yaml up -d && cross-env NODE_ENV=test && jest unit && jest int --runInBand",
-		"test::watch": "docker-compose -f ./docker-compose.test.yaml down && docker-compose -f ./docker-compose.test.yaml up -d && cross-env NODE_ENV=test && jest --runInBand --watch",
+		"test": "cross-env NODE_ENV=test jest",
+		"test::watch": "cross-env NODE_ENV=test jest --watch",
 		"format": "prettier --ignore-path .gitignore --write ./**/*.{ts,json}",
 		"typeorm": "typeorm-ts-node-esm",
 		"migration:generate": "typeorm-ts-node-esm migration:generate -d src/config/data-source.ts",
 		"migration:up": "typeorm-ts-node-esm migration:run -d src/config/data-source.ts",
-		"migration:down": "typeorm-ts-node-esm migration:revert -d src/config/data-source.ts"
+		"migration:down": "typeorm-ts-node-esm migration:revert -d src/config/data-source.ts",
+		"migration:create": "typeorm-ts-node-esm migration:create"
 	},
 	"repository": {
 		"type": "git",
@@ -48,6 +49,7 @@
 		"jest": "^28.1.1",
 		"nodemon": "^2.0.16",
 		"prettier": "^2.7.0",
+		"testcontainers": "^8.11.1",
 		"ts-jest": "^28.0.5",
 		"ts-node": "^10.8.1",
 		"typescript": "^4.7.3"
