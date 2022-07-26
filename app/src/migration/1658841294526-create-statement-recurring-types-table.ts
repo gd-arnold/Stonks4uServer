@@ -5,7 +5,7 @@ export class createStatementRecurringTypesTable1658841294526 implements Migratio
 
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(
-			`CREATE TABLE "statement_recurring_types" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying NOT NULL, "name" character varying NOT NULL, CONSTRAINT "UQ_5e8ba283937ece4c609bd30039c" UNIQUE ("alias"), CONSTRAINT "PK_c2b644a8620e59bfa309b548f5c" PRIMARY KEY ("id"))`
+			`CREATE TABLE "statement_recurring_types" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "alias" character varying NOT NULL, "name" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_5e8ba283937ece4c609bd30039c" UNIQUE ("alias"), CONSTRAINT "PK_c2b644a8620e59bfa309b548f5c" PRIMARY KEY ("id"))`
 		);
 	}
 

@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+} from 'typeorm';
 import { StatementCategory } from './StatementCategory';
 import { StatementRecurringType } from './StatementRecurringType';
 
@@ -39,4 +46,10 @@ export class Statement {
 
 	@Column({ type: 'text' })
 	recurrenceRule: string;
+
+	@CreateDateColumn()
+	createdAt: Date;
+
+	@UpdateDateColumn()
+	updatedAt: Date;
 }
