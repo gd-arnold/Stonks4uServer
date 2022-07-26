@@ -8,7 +8,7 @@
 		"build": "rm -rf ./build && tsc",
 		"dev": "cross-env NODE_ENV=dev nodemon --files src/index.ts",
 		"test": "cross-env NODE_ENV=test jest",
-		"test::watch": "cross-env NODE_ENV=test jest --watch",
+		"test:watch": "cross-env NODE_ENV=test jest --watch",
 		"format": "prettier --ignore-path .gitignore --write ./**/*.{ts,json}",
 		"typeorm": "typeorm-ts-node-esm",
 		"migration:generate": "typeorm-ts-node-esm migration:generate -d src/config/data-source.ts",
@@ -37,6 +37,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"pg": "^8.7.3",
 		"reflect-metadata": "^0.1.13",
+		"rrule": "^2.7.1",
 		"typeorm": "^0.3.6"
 	},
 	"devDependencies": {
