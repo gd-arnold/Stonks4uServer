@@ -22,6 +22,14 @@ export class User {
 	@Column()
 	passwordHash: string;
 
+	@Column({
+		type: 'decimal',
+		precision: 11,
+		scale: 2,
+		nullable: true,
+	})
+	balance: number;
+
 	@OneToMany(() => StatementCategory, (category) => category.user)
 	statementCategories: StatementCategory[];
 
