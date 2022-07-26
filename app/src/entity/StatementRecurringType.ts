@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Statement } from './Statement';
 
 @Entity('statement_recurring_types')
 export class StatementRecurringType {
@@ -10,4 +11,7 @@ export class StatementRecurringType {
 
 	@Column()
 	name: string;
+
+	@OneToMany(() => Statement, (statement) => statement.recurringType)
+	statements: Statement[];
 }

@@ -3,9 +3,11 @@ import {
 	CreateDateColumn,
 	Entity,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { Statement } from './Statement';
 import { User } from './User';
 
 export type StatementCategoryTypeType = 'income' | 'expense';
@@ -28,6 +30,9 @@ export class StatementCategory {
 		nullable: true,
 	})
 	user: User;
+
+	@OneToMany(() => Statement, (statement) => statement.category)
+	statements: Statement[];
 
 	@CreateDateColumn()
 	createdAt: Date;
