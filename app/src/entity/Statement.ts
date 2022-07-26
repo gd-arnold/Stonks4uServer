@@ -3,9 +3,11 @@ import {
 	CreateDateColumn,
 	Entity,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { ProcessedStatement } from './ProcessedStatement';
 import { StatementCategory } from './StatementCategory';
 import { StatementRecurringType } from './StatementRecurringType';
 
@@ -46,6 +48,9 @@ export class Statement {
 
 	@Column({ type: 'text' })
 	recurrenceRule: string;
+
+	@OneToMany(() => ProcessedStatement, (processedStatement) => processedStatement.statement)
+	processes: ProcessedStatement[];
 
 	@CreateDateColumn()
 	createdAt: Date;
