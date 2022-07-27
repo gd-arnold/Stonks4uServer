@@ -6,6 +6,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { Statement } from './Statement';
 import { StatementCategory } from './StatementCategory';
 
 @Entity('users')
@@ -29,6 +30,9 @@ export class User {
 		nullable: true,
 	})
 	balance: number;
+
+	@OneToMany(() => Statement, (statement) => statement.user)
+	statements: Statement[];
 
 	@OneToMany(() => StatementCategory, (category) => category.user)
 	statementCategories: StatementCategory[];

@@ -10,6 +10,7 @@ import {
 import { ProcessedStatement } from './ProcessedStatement';
 import { StatementCategory } from './StatementCategory';
 import { StatementRecurringType } from './StatementRecurringType';
+import { User } from './User';
 
 export type StatementTypeType = 'income' | 'expense;';
 
@@ -17,6 +18,12 @@ export type StatementTypeType = 'income' | 'expense;';
 export class Statement {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
+
+	@Column()
+	name: string;
+
+	@ManyToOne(() => User, (user) => user.statements)
+	user: User;
 
 	@Column({
 		type: 'enum',
