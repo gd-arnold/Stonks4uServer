@@ -4,13 +4,13 @@ import { Statement } from '../entity/Statement';
 import { User } from '../entity/User';
 import { StatementService } from '../service/Statement';
 import { StatementCategoryService } from '../service/StatementCategory';
-import { StatementRecurringTypeService } from '../service/StatementRecurringType';
+import { StatementRecurrenceTypeService } from '../service/StatementRecurrenceType';
 import { UserService } from '../service/User';
 
 export const StatementController = {
 	post: async (req: Request<{}, {}, StatementDTO>, res: Response) => {
 		try {
-			const { name, type, categoryId, amount, recurringTypeAlias, automaticPayment } = req.body;
+			const { name, type, categoryId, amount, recurrenceTypeAlias, automaticPayment } = req.body;
 			const date = new Date(req.body.date);
 
 			const { id } = req.userPayload;
@@ -20,17 +20,17 @@ export const StatementController = {
 				return res.status(401).json({ message: 'Invalid category.' });
 			}
 
-			const recurringType = await StatementRecurringTypeService.getRecurringTypeByAlias(
-				recurringTypeAlias
+			const recurrenceType = await StatementRecurrenceTypeService.getRecurrenceTypeByAlias(
+				recurrenceTypeAlias
 			);
-			if (recurringType === null) {
+			if (recurrenceType === null) {
 				return res.status(404).json({ message: 'Invalid recurring type alias.' });
 			}
 
 			const user = (await UserService.findUserById(id)) as User;
 			const recurrenceRule =
-				StatementRecurringTypeService.RTypeToRRuleMap[
-					recurringTypeAlias as keyof typeof StatementRecurringTypeService.RTypeToRRuleMap
+				StatementRecurrenceTypeService.RTypeToRRuleMap[
+					recurrenceTypeAlias as keyof typeof StatementRecurrenceTypeService.RTypeToRRuleMap
 				](date).toString();
 
 			const statement: Partial<Statement> = {
@@ -38,7 +38,7 @@ export const StatementController = {
 				user,
 				type,
 				category,
-				recurringType,
+				recurrenceType,
 				recurrenceRule,
 				amount,
 				date,

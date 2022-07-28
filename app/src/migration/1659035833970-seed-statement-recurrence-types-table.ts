@@ -1,9 +1,10 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
-import { StatementRecurringType } from '../entity/StatementRecurringType';
+import { MigrationInterface, QueryRunner } from "typeorm"
+import { StatementRecurrenceType } from "../entity/StatementRecurrenceType";
 
-export class seedStatementRecurringTypesTable1658841430465 implements MigrationInterface {
-	public async up(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.manager.insert(StatementRecurringType, [
+export class seedStatementRecurrenceTypesTable1659035833970 implements MigrationInterface {
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.manager.insert(StatementRecurrenceType, [
 			{ alias: 'once', name: 'Just once' },
 			{ alias: 'daily', name: 'Every day' },
 			{ alias: 'weekdays', name: 'Every weekday' },
@@ -16,7 +17,9 @@ export class seedStatementRecurringTypesTable1658841430465 implements MigrationI
 			{ alias: 'six-months', name: 'Every 6 months' },
 			{ alias: 'yearly', name: 'Every year' },
 		]);
-	}
+    }
 
-	public async down(queryRunner: QueryRunner): Promise<void> {}
+    public async down(queryRunner: QueryRunner): Promise<void> {
+    }
+
 }

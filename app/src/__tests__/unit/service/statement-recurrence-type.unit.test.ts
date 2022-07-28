@@ -1,9 +1,9 @@
 import { RRule } from 'rrule';
-import { StatementRecurringTypeService } from '../../../service/StatementRecurringType';
+import { StatementRecurrenceTypeService } from '../../../service/StatementRecurrenceType';
 
 describe('Statement recurring type suite', () => {
 	test('RTypeToRRule returns correct RRule object', () => {
-		const RTypeToRRuleMap = StatementRecurringTypeService.RTypeToRRuleMap;
+		const RTypeToRRuleMap = StatementRecurrenceTypeService.RTypeToRRuleMap;
 		const dtstart = new Date(Date.UTC(2022, 27, 6, 23, 59));
 
 		expect(RTypeToRRuleMap['once'](dtstart)).toEqual(

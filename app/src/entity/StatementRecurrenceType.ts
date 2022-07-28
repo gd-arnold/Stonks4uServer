@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { Statement } from './Statement';
 
-@Entity('statement_recurring_types')
-export class StatementRecurringType {
+@Entity('statement_recurrence_types')
+export class StatementRecurrenceType {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
 
@@ -19,12 +19,12 @@ export class StatementRecurringType {
 	@Column()
 	name: string;
 
-	@OneToMany(() => Statement, (statement) => statement.recurringType)
+	@OneToMany(() => Statement, (statement) => statement.recurrenceType)
 	statements: Statement[];
 
-	@CreateDateColumn()
+	@CreateDateColumn({ type: 'timestamptz' })
 	createdAt: Date;
 
-	@UpdateDateColumn()
+	@UpdateDateColumn({ type: 'timestamptz' })
 	updatedAt: Date;
 }

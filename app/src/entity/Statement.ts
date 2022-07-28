@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { ProcessedStatement } from './ProcessedStatement';
 import { StatementCategory } from './StatementCategory';
-import { StatementRecurringType } from './StatementRecurringType';
+import { StatementRecurrenceType } from './StatementRecurrenceType';
 import { User } from './User';
 
 export type StatementTypeType = 'income' | 'expense;';
@@ -50,8 +50,8 @@ export class Statement {
 	@Column()
 	automaticPayment: boolean;
 
-	@ManyToOne(() => StatementRecurringType, (recurringType) => recurringType.statements)
-	recurringType: StatementRecurringType;
+	@ManyToOne(() => StatementRecurrenceType, (recurrenceType) => recurrenceType.statements)
+	recurrenceType: StatementRecurrenceType;
 
 	@Column({ type: 'text' })
 	recurrenceRule: string;
@@ -59,9 +59,9 @@ export class Statement {
 	@OneToMany(() => ProcessedStatement, (processedStatement) => processedStatement.statement)
 	processes: ProcessedStatement[];
 
-	@CreateDateColumn()
+	@CreateDateColumn({ type: 'timestamptz' })
 	createdAt: Date;
 
-	@UpdateDateColumn()
+	@UpdateDateColumn({ type: 'timestamptz' })
 	updatedAt: Date;
 }

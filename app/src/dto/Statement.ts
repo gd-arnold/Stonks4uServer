@@ -41,7 +41,7 @@ export class StatementDTO {
 	@IsDefined()
 	@MinLength(1)
 	@MaxLength(255)
-	recurringTypeAlias: string;
+	recurrenceTypeAlias: string;
 
 	@Expose()
 	@Type(() => Date)

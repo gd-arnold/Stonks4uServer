@@ -34,9 +34,9 @@ export class StatementCategory {
 	@OneToMany(() => Statement, (statement) => statement.category)
 	statements: Statement[];
 
-	@CreateDateColumn()
+	@CreateDateColumn({ type: 'timestamptz' })
 	createdAt: Date;
 
-	@UpdateDateColumn()
+	@UpdateDateColumn({ type: 'timestamptz' })
 	updatedAt: Date;
 }

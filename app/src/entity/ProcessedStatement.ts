@@ -16,6 +16,6 @@ export class ProcessedStatement {
 	})
 	amount: number;
 
-	@CreateDateColumn()
+	@CreateDateColumn({ type: 'timestamptz' })
 	processedOn: Date;
 }

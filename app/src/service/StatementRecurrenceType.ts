@@ -1,6 +1,6 @@
 import { ByWeekday, Frequency, RRule } from 'rrule';
 import { AppDataSource } from '../config/data-source';
-import { StatementRecurringType } from '../entity/StatementRecurringType';
+import { StatementRecurrenceType } from '../entity/StatementRecurrenceType';
 
 interface IRecurrence {
 	freq: Frequency;
@@ -9,7 +9,7 @@ interface IRecurrence {
 	byweekday?: ByWeekday[];
 }
 
-const StatementRecurringTypeRepository = AppDataSource.getRepository(StatementRecurringType);
+const StatementRecurrenceTypeRepository = AppDataSource.getRepository(StatementRecurrenceType);
 
 const dailyRecurrence = (dtstart: Date, byweekday?: ByWeekday[]) => {
 	const rec: IRecurrence = {
@@ -34,7 +34,7 @@ const intervalRecurrence = (freq: Frequency, dtstart: Date, interval?: number) =
 	return rec;
 };
 
-export const StatementRecurringTypeService = {
+export const StatementRecurrenceTypeService = {
 	RTypeToRRuleMap: {
 		once: (dtstart: Date) => new RRule({ ...dailyRecurrence(dtstart), until: dtstart }),
 		daily: (dtstart: Date) => new RRule(dailyRecurrence(dtstart)),
@@ -49,13 +49,13 @@ export const StatementRecurringTypeService = {
 		'six-months': (dtstart: Date) => new RRule(intervalRecurrence(RRule.MONTHLY, dtstart, 6)),
 		yearly: (dtstart: Date) => new RRule(intervalRecurrence(RRule.YEARLY, dtstart)),
 	},
-	getRecurringTypeByAlias: async (alias: string) => {
-		const recurringType = await StatementRecurringTypeRepository.createQueryBuilder(
+	getRecurrenceTypeByAlias: async (alias: string) => {
+		const recurrenceType = await StatementRecurrenceTypeRepository.createQueryBuilder(
 			'statement_recurring_types'
 		)
 			.where('statement_recurring_types.alias = :alias', { alias })
 			.getOne();
 
-		return recurringType;
+		return recurrenceType;
 	},
 };
