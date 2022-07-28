@@ -103,13 +103,24 @@ describe('Statement category service suite', () => {
 		})) as StatementCategory;
 	});
 
-	test('Gets custom category', async () => {
-		expect(await StatementCategoryService.getCustomCategory(randomUUID(), testUser.id)).toEqual(
+	test('Gets category', async () => {
+		expect(await StatementCategoryService.getCategory(savedIncomeCategory.id)).toEqual(
+			savedIncomeCategory
+		);
+		expect(await StatementCategoryService.getCategory(randomUUID())).toBe(null);
+		expect(await StatementCategoryService.getCategory(savedIncomeCategory.id, testUser.id)).toEqual(
+			savedIncomeCategory
+		);
+		expect(await StatementCategoryService.getCategory(savedIncomeCategory.id, randomUUID())).toBe(
 			null
 		);
+	});
+
+	test('Gets custom category', async () => {
+		expect(await StatementCategoryService.getCustomCategory(randomUUID(), testUser.id)).toBe(null);
 		expect(
 			await StatementCategoryService.getCustomCategory(savedIncomeCategory.id, randomUUID())
-		).toEqual(null);
+		).toBe(null);
 		expect(
 			await StatementCategoryService.getCustomCategory(savedIncomeCategory.id, testUser.id)
 		).toEqual(savedIncomeCategory);
