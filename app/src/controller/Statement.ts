@@ -28,6 +28,10 @@ export const StatementController = {
 			}
 
 			const user = (await UserService.findUserById(id)) as User;
+			if (user.balance === null) {
+				return res.status(400).json({ message: 'Invalid user balance.' });
+			}
+
 			const recurrenceRule =
 				StatementRecurrenceTypeService.RTypeToRRuleMap[
 					recurrenceTypeAlias as keyof typeof StatementRecurrenceTypeService.RTypeToRRuleMap
