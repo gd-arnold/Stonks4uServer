@@ -5,6 +5,7 @@ import cors from 'cors';
 import { App } from './config/config';
 import AuthRouter from './routes/Auth';
 import StatementCategoryRouter from './routes/StatementCategory';
+import StatementRouter from './routes/Statement';
 
 export const createApp = () => {
 	const app = express();
@@ -13,8 +14,8 @@ export const createApp = () => {
 	app.use(express.json());
 
 	app.use('/auth', AuthRouter);
+	app.use('/statement', StatementRouter);
 	app.use('/statement-category', StatementCategoryRouter);
-
 	return app;
 };
 

@@ -41,10 +41,10 @@ export class Statement {
 	})
 	amount: number;
 
-	@Column({ type: 'integer' })
+	@Column({ type: 'integer', default: 0 })
 	required_process: number;
 
-	@Column({ type: 'timestamp without time zone' }) // UTC by default
+	@Column({ type: 'timestamptz' })
 	date: Date;
 
 	@Column()

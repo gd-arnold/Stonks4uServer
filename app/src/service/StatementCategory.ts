@@ -55,6 +55,20 @@ export const StatementCategoryService = {
 		const customCategories = await customCategoriesQuery.getMany();
 		return customCategories;
 	},
+	getCategory: async (categoryId: string, userId: string) => {
+		const category = await StatementCategoryRepository.createQueryBuilder('statement_category')
+			.where('statement_category.id = :categoryId', { categoryId })
+			.andWhere(
+				new Brackets((qb) => {
+					qb.where('statement_category.userId = :userId', { userId }).orWhere(
+						'statement_category.userId IS NULL'
+					);
+				})
+			)
+			.getOne();
+
+		return category;
+	},
 	getCustomCategory: async (categoryId: string, userId: string) => {
 		const category = await StatementCategoryRepository.createQueryBuilder('statement_category')
 			.where('statement_category.id = :categoryId', { categoryId })

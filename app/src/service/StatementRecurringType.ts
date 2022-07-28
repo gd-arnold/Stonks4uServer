@@ -1,4 +1,5 @@
 import { ByWeekday, Frequency, RRule } from 'rrule';
+import { AppDataSource } from '../config/data-source';
 import { StatementRecurringType } from '../entity/StatementRecurringType';
 
 interface IRecurrence {
@@ -7,6 +8,8 @@ interface IRecurrence {
 	interval?: number;
 	byweekday?: ByWeekday[];
 }
+
+const StatementRecurringTypeRepository = AppDataSource.getRepository(StatementRecurringType);
 
 const dailyRecurrence = (dtstart: Date, byweekday?: ByWeekday[]) => {
 	const rec: IRecurrence = {
@@ -45,5 +48,14 @@ export const StatementRecurringTypeService = {
 		'three-months': (dtstart: Date) => new RRule(intervalRecurrence(RRule.MONTHLY, dtstart, 3)),
 		'six-months': (dtstart: Date) => new RRule(intervalRecurrence(RRule.MONTHLY, dtstart, 6)),
 		yearly: (dtstart: Date) => new RRule(intervalRecurrence(RRule.YEARLY, dtstart)),
+	},
+	getRecurringTypeByAlias: async (alias: string) => {
+		const recurringType = await StatementRecurringTypeRepository.createQueryBuilder(
+			'statement_recurring_types'
+		)
+			.where('statement_recurring_types.alias = :alias', { alias })
+			.getOne();
+
+		return recurringType;
 	},
 };
