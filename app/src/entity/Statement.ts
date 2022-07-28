@@ -12,7 +12,7 @@ import { StatementCategory } from './StatementCategory';
 import { StatementRecurrenceType } from './StatementRecurrenceType';
 import { User } from './User';
 
-export type StatementTypeType = 'income' | 'expense;';
+export type StatementTypeType = 'income' | 'expense';
 
 @Entity('statements')
 export class Statement {
