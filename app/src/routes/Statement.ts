@@ -8,6 +8,12 @@ const StatementRouter = express.Router();
 
 StatementRouter.use(auth);
 
+// GET
+StatementRouter.get('/:userId', StatementController.get.all);
+StatementRouter.get('/:userId/income', StatementController.get.income);
+StatementRouter.get('/:userId/expense', StatementController.get.expense);
+
+// POST
 StatementRouter.post('/', validate(StatementDTO), StatementController.post);
 
 export default StatementRouter;

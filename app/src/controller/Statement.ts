@@ -8,6 +8,53 @@ import { StatementRecurrenceTypeService } from '../service/StatementRecurrenceTy
 import { UserService } from '../service/User';
 
 export const StatementController = {
+	get: {
+		all: async (req: Request, res: Response) => {
+			try {
+				const { userId } = req.params;
+				const { id } = req.userPayload;
+
+				if (id !== userId) {
+					return res.status(401).json({ message: 'Invalid operation.' });
+				}
+
+				const statements = await StatementService.getStatements(userId);
+				return res.status(200).json({ statements });
+			} catch (e) {
+				return res.status(500).json({ e });
+			}
+		},
+		income: async (req: Request, res: Response) => {
+			try {
+				const { userId } = req.params;
+				const { id } = req.userPayload;
+
+				if (id !== userId) {
+					return res.status(401).json({ message: 'Invalid operation.' });
+				}
+
+				const statements = await StatementService.getStatements(userId, 'income');
+				return res.status(200).json({ statements });
+			} catch (e) {
+				return res.status(500).json({ e });
+			}
+		},
+		expense: async (req: Request, res: Response) => {
+			try {
+				const { userId } = req.params;
+				const { id } = req.userPayload;
+
+				if (id !== userId) {
+					return res.status(401).json({ message: 'Invalid operation.' });
+				}
+
+				const statements = await StatementService.getStatements(userId, 'expense');
+				return res.status(200).json({ statements });
+			} catch (e) {
+				return res.status(500).json({ e });
+			}
+		},
+	},
 	post: async (req: Request<{}, {}, StatementDTO>, res: Response) => {
 		try {
 			const { name, type, categoryId, amount, recurrenceTypeAlias, automaticPayment } = req.body;
@@ -16,7 +63,7 @@ export const StatementController = {
 			const { id } = req.userPayload;
 
 			const category = await StatementCategoryService.getCategory(categoryId, id);
-			if (category === null) {
+			if (category === null || category.type !== type) {
 				return res.status(401).json({ message: 'Invalid category.' });
 			}
 
