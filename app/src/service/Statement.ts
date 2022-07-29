@@ -4,8 +4,17 @@ import { Statement, StatementTypeType } from '../entity/Statement';
 const StatementRepository = AppDataSource.getRepository(Statement);
 
 export const StatementService = {
-	getStatementById: async (id: string) => {
-		const statement = await StatementRepository.findOneBy({ id });
+	getStatement: async (id: string, userId?: string) => {
+		let statementQuery = StatementRepository.createQueryBuilder('statements').where(
+			'statements.id = :id',
+			{ id }
+		);
+
+		if (typeof userId !== 'undefined') {
+			statementQuery = statementQuery.andWhere('statements.userId = :userId', { userId });
+		}
+
+		const statement = await statementQuery.getOne();
 		return statement;
 	},
 	getStatements: async (userId: string, type?: StatementTypeType) => {
@@ -25,6 +34,11 @@ export const StatementService = {
 	save: async (input: Partial<Statement>) => {
 		const statement = StatementRepository.create(input);
 		await StatementRepository.save(statement);
+
+		return true;
+	},
+	softDelete: async (statementId: string) => {
+		await StatementRepository.softDelete(statementId);
 
 		return true;
 	},

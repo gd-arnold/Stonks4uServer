@@ -16,4 +16,7 @@ StatementRouter.get('/:userId/expense', StatementController.get.expense);
 // POST
 StatementRouter.post('/', validate(StatementDTO), StatementController.post);
 
+// DELETE
+StatementRouter.delete('/:statementId', StatementController.delete);
+
 export default StatementRouter;

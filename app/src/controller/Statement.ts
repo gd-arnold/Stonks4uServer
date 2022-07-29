@@ -1,3 +1,4 @@
+import { isUUID } from 'class-validator';
 import { Request, Response } from 'express';
 import { StatementDTO } from '../dto/Statement';
 import { Statement } from '../entity/Statement';
@@ -98,6 +99,27 @@ export const StatementController = {
 
 			await StatementService.save(statement);
 			return res.status(201).json({ message: 'The statement is successully created.' });
+		} catch (e) {
+			return res.status(500).json({ e });
+		}
+	},
+	delete: async (req: Request, res: Response) => {
+		try {
+			const { statementId } = req.params;
+			const { id } = req.userPayload;
+
+			if (!isUUID(statementId)) {
+				return res.status(400).json({ message: 'Invalid statement id' });
+			}
+
+			const statement = await StatementService.getStatement(statementId, id);
+
+			if (statement === null) {
+				return res.status(401).json({ message: 'Invalid operation.' });
+			}
+
+			await StatementService.softDelete(statementId);
+			return res.status(204).send();
 		} catch (e) {
 			return res.status(500).json({ e });
 		}
