@@ -5,7 +5,8 @@ import { StatementCategory } from '../../../entity/StatementCategory';
 import { User } from '../../../entity/User';
 import { StatementCategoryService } from '../../../service/StatementCategory';
 import { TestDBContainer } from '../../utils/dbcontainer.utils';
-import { generateUser } from '../../utils/user.utils';
+import { createStatementCategory } from '../../utils/statement-category';
+import { createSavedUser } from '../../utils/user.utils';
 
 describe('Statement category service suite', () => {
 	jest.setTimeout(180000);
@@ -18,7 +19,7 @@ describe('Statement category service suite', () => {
 	beforeAll(async () => {
 		await dbContainer.start();
 		await Database.connect();
-		testUser = await generateUser();
+		testUser = await createSavedUser();
 	});
 
 	afterAll(async () => {
@@ -28,18 +29,17 @@ describe('Statement category service suite', () => {
 
 	const setup = () => {
 		const repo = AppDataSource.getRepository(StatementCategory);
-		const testIncomeCategory: Partial<StatementCategory> = {
+		const testIncomeCategory = createStatementCategory(testUser, {
 			id: randomUUID(),
 			name: 'TestI',
 			type: 'income',
-			user: testUser,
-		};
-		const testExpenseCategory: Partial<StatementCategory> = {
+		});
+		const testExpenseCategory = createStatementCategory(testUser, {
 			id: randomUUID(),
 			name: 'TestE',
 			type: 'expense',
-			user: testUser,
-		};
+		});
+
 		return { repo, testIncomeCategory, testExpenseCategory };
 	};
 

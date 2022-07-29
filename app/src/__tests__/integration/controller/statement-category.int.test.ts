@@ -6,7 +6,7 @@ import { StatementCategoryController } from '../../../controller/StatementCatego
 import { AppDataSource } from '../../../config/data-source';
 import { StatementCategory } from '../../../entity/StatementCategory';
 import { User } from '../../../entity/User';
-import { generateUser } from '../../utils/user.utils';
+import { createSavedUser } from '../../utils/user.utils';
 import { StatementCategoryDTO } from '../../../dto/StatementCategory';
 import { randomUUID } from 'crypto';
 
@@ -22,7 +22,7 @@ describe('Statement category controller suite', () => {
 	beforeAll(async () => {
 		await dbContainer.start();
 		await Database.connect();
-		testUser = await generateUser();
+		testUser = await createSavedUser();
 		userPayload = {
 			id: testUser.id,
 			email: testUser.email,
