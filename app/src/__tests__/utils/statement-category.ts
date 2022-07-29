@@ -17,8 +17,10 @@ export const createSavedStatementCategory = async (
 	user: User,
 	overrides: Partial<StatementCategory> = {}
 ) => {
-	const category = createStatementCategory(user, overrides);
+	const category = createStatementCategory(user, overrides) as Partial<StatementCategory>;
 	await repo.save(category);
+
+	delete category.user;
 
 	return category;
 };
