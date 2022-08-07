@@ -48,6 +48,9 @@ export class Statement {
 	@Column({ type: 'timestamptz' })
 	date: Date;
 
+	@Column({ default: false })
+	isProcessed: boolean;
+
 	@Column()
 	automaticPayment: boolean;
 
