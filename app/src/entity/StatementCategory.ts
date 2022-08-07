@@ -1,6 +1,7 @@
 import {
 	Column,
 	CreateDateColumn,
+	DeleteDateColumn,
 	Entity,
 	ManyToOne,
 	OneToMany,
@@ -39,4 +40,7 @@ export class StatementCategory {
 
 	@UpdateDateColumn({ type: 'timestamptz' })
 	updatedAt: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	deletedAt?: Date;
 }

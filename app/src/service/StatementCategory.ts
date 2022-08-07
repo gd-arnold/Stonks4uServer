@@ -93,8 +93,8 @@ export const StatementCategoryService = {
 
 		return true;
 	},
-	delete: async (categoryId: string) => {
-		await StatementCategoryRepository.delete(categoryId);
+	softDelete: async (categoryId: string) => {
+		await StatementCategoryRepository.softDelete(categoryId);
 
 		return true;
 	},

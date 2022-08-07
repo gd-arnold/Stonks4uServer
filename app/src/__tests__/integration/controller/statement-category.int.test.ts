@@ -190,8 +190,8 @@ describe('Statement category controller suite', () => {
 			expect(res.send).toHaveBeenCalledTimes(1);
 			expect(res.json).toHaveBeenCalledTimes(0);
 
-			savedExpenseCategory.user = testUser;
-			await repo.save(savedExpenseCategory);
+			// Restore deleted category
+			await repo.restore(savedExpenseCategory.id);
 			savedExpenseCategory = (await repo.findOneBy({
 				id: savedExpenseCategory.id,
 			})) as StatementCategory;

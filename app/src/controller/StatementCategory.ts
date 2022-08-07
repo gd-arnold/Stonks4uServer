@@ -186,8 +186,7 @@ export const StatementCategoryController = {
 				return res.status(401).json({ message: 'Invalid operation.' });
 			}
 
-			await StatementCategoryService.delete(categoryId);
-
+			await StatementCategoryService.softDelete(categoryId);
 			return res.status(204).send();
 		} catch (e) {
 			return res.status(500).json({ e });

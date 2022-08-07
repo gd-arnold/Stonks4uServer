@@ -1,5 +1,5 @@
-import { MigrationInterface, QueryRunner } from "typeorm"
-import { StatementCategory } from "../entity/StatementCategory";
+import { MigrationInterface, QueryRunner } from 'typeorm';
+import { StatementCategory } from '../../entity/StatementCategory';
 
 const categories: Partial<StatementCategory>[] = [
 	{ name: 'Auto & Transport', type: 'expense', user: undefined },
@@ -39,13 +39,14 @@ const categories: Partial<StatementCategory>[] = [
 	{ name: 'Commisions', type: 'income', user: undefined },
 ];
 
-export class seedStatementCategoriesTable1659035030657 implements MigrationInterface {
+export class statementCategoriesTable implements MigrationInterface {
+	name = 'statementCategoriesTable9999999999999';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
+	async up(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.manager.insert(StatementCategory, categories);
-    }
+	}
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-    }
-
+	async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query('DELETE FROM statement_categories');
+	}
 }

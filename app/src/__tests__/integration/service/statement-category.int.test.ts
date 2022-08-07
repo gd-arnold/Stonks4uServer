@@ -91,13 +91,12 @@ describe('Statement category service suite', () => {
 	test('Deletes category', async () => {
 		const { repo } = setup();
 
-		await StatementCategoryService.delete(savedExpenseCategory.id);
+		await StatementCategoryService.softDelete(savedExpenseCategory.id);
 
 		expect(await repo.findOneBy({ id: savedExpenseCategory.id })).toBe(null);
 
 		// Restore deleted category
-		savedExpenseCategory.user = testUser;
-		await repo.save(savedExpenseCategory);
+		await repo.restore(savedExpenseCategory.id);
 		savedExpenseCategory = (await repo.findOneBy({
 			id: savedExpenseCategory.id,
 		})) as StatementCategory;
