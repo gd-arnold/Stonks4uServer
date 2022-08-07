@@ -1,5 +1,6 @@
 import { ByWeekday, Frequency, RRule } from 'rrule';
 import { AppDataSource } from '../config/data-source';
+import { Statement } from '../entity/Statement';
 import { StatementRecurrenceType } from '../entity/StatementRecurrenceType';
 
 interface IRecurrence {
@@ -10,6 +11,7 @@ interface IRecurrence {
 }
 
 const StatementRecurrenceTypeRepository = AppDataSource.getRepository(StatementRecurrenceType);
+const StatementRepository = AppDataSource.getRepository(Statement);
 
 const dailyRecurrence = (dtstart: Date, byweekday?: ByWeekday[]) => {
 	const rec: IRecurrence = {
@@ -51,9 +53,33 @@ export const StatementRecurrenceTypeService = {
 	},
 	getRecurrenceTypeByAlias: async (alias: string) => {
 		const recurrenceType = await StatementRecurrenceTypeRepository.createQueryBuilder(
-			'statement_recurring_types'
+			'recurrence_types'
 		)
-			.where('statement_recurring_types.alias = :alias', { alias })
+			.where('recurrence_types.alias = :alias', { alias })
+			.getOne();
+
+		return recurrenceType;
+	},
+	getRecurrenceTypeById: async (id: string) => {
+		const recurrenceType = await StatementRecurrenceTypeRepository.createQueryBuilder(
+			'recurrence_types'
+		)
+			.where('recurrence_types.id = :id', { id })
+			.getOne();
+
+		return recurrenceType;
+	},
+	getRecurrenceTypeByStatementId: async (id: string) => {
+		const recurrenceTypeId = await StatementRepository.createQueryBuilder('statements')
+			.leftJoinAndSelect('statements.recurrenceType', 'recurrenceType')
+			.where('statements.id = :id', { id })
+			.select('recurrenceType.id')
+			.getRawOne();
+
+		const recurrenceType = await StatementRecurrenceTypeRepository.createQueryBuilder(
+			'recurrence_types'
+		)
+			.where('recurrence_types.id = :recurrenceType_id', recurrenceTypeId)
 			.getOne();
 
 		return recurrenceType;

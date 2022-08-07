@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { StatementDTO } from '../dto/Statement';
 import { Statement } from '../entity/Statement';
 import { User } from '../entity/User';
+import { CustomError } from '../helpers/CustomError';
 import { StatementService } from '../service/Statement';
 import { StatementCategoryService } from '../service/StatementCategory';
 import { StatementRecurrenceTypeService } from '../service/StatementRecurrenceType';
@@ -103,13 +104,43 @@ export const StatementController = {
 			return res.status(500).json({ e });
 		}
 	},
+	process: async (req: Request, res: Response) => {
+		try {
+			const { statementId } = req.params;
+			const { id } = req.userPayload;
+
+			if (!isUUID(statementId)) {
+				return res.status(400).json({ message: 'Invalid statement id.' });
+			}
+
+			const statement = await StatementService.getStatement(statementId, id);
+			const user = (await UserService.findUserById(id)) as User;
+
+			if (statement === null) {
+				return res.status(401).json({ message: 'Invalid operation.' });
+			}
+
+			if (user.balance === null) {
+				return res.status(400).json({ message: 'Invalid balance.' });
+			}
+
+			await StatementService.process(statement, user);
+			return res.status(200).json({ message: 'The statement is processed sucessfully.' });
+		} catch (e: any) {
+			if (e instanceof CustomError) {
+				return res.status(e.status).json({ message: e.message });
+			}
+
+			return res.status(500).json({ e });
+		}
+	},
 	delete: async (req: Request, res: Response) => {
 		try {
 			const { statementId } = req.params;
 			const { id } = req.userPayload;
 
 			if (!isUUID(statementId)) {
-				return res.status(400).json({ message: 'Invalid statement id' });
+				return res.status(400).json({ message: 'Invalid statement id.' });
 			}
 
 			const statement = await StatementService.getStatement(statementId, id);
