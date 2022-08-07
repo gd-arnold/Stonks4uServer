@@ -18,7 +18,7 @@ export const StatementService = {
 		return statement;
 	},
 	getStatements: async (userId: string, type?: StatementTypeType) => {
-		let statementsQuery = await StatementRepository.createQueryBuilder('statements')
+		let statementsQuery = StatementRepository.createQueryBuilder('statements')
 			.leftJoinAndSelect('statements.category', 'category')
 			.leftJoinAndSelect('statements.recurrenceType', 'recurrenceType')
 			.leftJoinAndSelect('statements.processes', 'processedStatements')
