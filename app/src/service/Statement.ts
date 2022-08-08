@@ -92,10 +92,10 @@ export const StatementService = {
 			statement.id
 		)) as StatementRecurrenceType;
 
-		if (statement.required_process === 0 || recurrenceType.alias === 'once') {
+		if (statement.required_processes === 0 || recurrenceType.alias === 'once') {
 			statement.isProcessed = true;
 		}
-		statement.required_process = Math.max(statement.required_process - 1, 0);
+		statement.required_processes = Math.max(statement.required_processes - 1, 0);
 
 		await this.save(statement);
 

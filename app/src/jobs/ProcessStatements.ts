@@ -29,7 +29,7 @@ const process = async (statement: Statement) => {
 			await ProcessedStatementService.save({ statement: statement, amount: statement.amount });
 		}
 		if (!statement.isProcessed) {
-			statement.required_process++;
+			statement.required_processes++;
 		}
 		statement.isProcessed = false;
 
@@ -39,7 +39,7 @@ const process = async (statement: Statement) => {
 		return true;
 	} catch (e: any) {
 		if (e instanceof CustomError) {
-			statement.required_process++;
+			statement.required_processes++;
 			await StatementService.save(statement);
 		} else {
 			console.error(e.message);

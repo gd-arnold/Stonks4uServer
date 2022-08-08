@@ -43,7 +43,7 @@ export class Statement {
 	amount: number;
 
 	@Column({ type: 'integer', default: 0 })
-	required_process: number;
+	required_processes: number;
 
 	@Column({ type: 'timestamptz' })
 	date: Date;
