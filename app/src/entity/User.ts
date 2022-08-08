@@ -6,6 +6,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { Statement } from './Statement';
 import { StatementCategory } from './StatementCategory';
 
 @Entity('users')
@@ -22,12 +23,23 @@ export class User {
 	@Column()
 	passwordHash: string;
 
+	@Column({
+		type: 'decimal',
+		precision: 11,
+		scale: 2,
+		nullable: true,
+	})
+	balance: number;
+
+	@OneToMany(() => Statement, (statement) => statement.user)
+	statements: Statement[];
+
 	@OneToMany(() => StatementCategory, (category) => category.user)
 	statementCategories: StatementCategory[];
 
-	@CreateDateColumn()
+	@CreateDateColumn({ type: 'timestamptz' })
 	createdAt: Date;
 
-	@UpdateDateColumn()
+	@UpdateDateColumn({ type: 'timestamptz' })
 	updatedAt: Date;
 }

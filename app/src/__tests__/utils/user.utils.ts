@@ -4,13 +4,18 @@ import { User } from '../../entity/User';
 
 const repo = AppDataSource.getRepository(User);
 
-export const generateUser = async () => {
-	const testUser = repo.create({
+export const createUser = (overrides: Partial<User> = {}) => {
+	return repo.create({
 		email: `${randomUUID()}@t.com`,
 		fullName: 'Test Test',
 		passwordHash: 'test',
+		...overrides,
 	});
+};
 
-	await repo.save(testUser);
-	return testUser;
+export const createSavedUser = async (overrides: Partial<User> = {}) => {
+	const user = createUser(overrides);
+	await repo.save(user);
+
+	return user;
 };

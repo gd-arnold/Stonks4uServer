@@ -1,11 +1,14 @@
 import {
 	Column,
 	CreateDateColumn,
+	DeleteDateColumn,
 	Entity,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
+import { Statement } from './Statement';
 import { User } from './User';
 
 export type StatementCategoryTypeType = 'income' | 'expense';
@@ -29,9 +32,15 @@ export class StatementCategory {
 	})
 	user: User;
 
-	@CreateDateColumn()
+	@OneToMany(() => Statement, (statement) => statement.category)
+	statements: Statement[];
+
+	@CreateDateColumn({ type: 'timestamptz' })
 	createdAt: Date;
 
-	@UpdateDateColumn()
+	@UpdateDateColumn({ type: 'timestamptz' })
 	updatedAt: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	deletedAt?: Date;
 }

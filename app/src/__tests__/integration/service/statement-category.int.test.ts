@@ -5,7 +5,8 @@ import { StatementCategory } from '../../../entity/StatementCategory';
 import { User } from '../../../entity/User';
 import { StatementCategoryService } from '../../../service/StatementCategory';
 import { TestDBContainer } from '../../utils/dbcontainer.utils';
-import { generateUser } from '../../utils/user.utils';
+import { createStatementCategory } from '../../utils/statement-category';
+import { createSavedUser } from '../../utils/user.utils';
 
 describe('Statement category service suite', () => {
 	jest.setTimeout(180000);
@@ -18,7 +19,7 @@ describe('Statement category service suite', () => {
 	beforeAll(async () => {
 		await dbContainer.start();
 		await Database.connect();
-		testUser = await generateUser();
+		testUser = await createSavedUser();
 	});
 
 	afterAll(async () => {
@@ -28,18 +29,17 @@ describe('Statement category service suite', () => {
 
 	const setup = () => {
 		const repo = AppDataSource.getRepository(StatementCategory);
-		const testIncomeCategory: Partial<StatementCategory> = {
+		const testIncomeCategory = createStatementCategory(testUser, {
 			id: randomUUID(),
 			name: 'TestI',
 			type: 'income',
-			user: testUser,
-		};
-		const testExpenseCategory: Partial<StatementCategory> = {
+		});
+		const testExpenseCategory = createStatementCategory(testUser, {
 			id: randomUUID(),
 			name: 'TestE',
 			type: 'expense',
-			user: testUser,
-		};
+		});
+
 		return { repo, testIncomeCategory, testExpenseCategory };
 	};
 
@@ -91,25 +91,35 @@ describe('Statement category service suite', () => {
 	test('Deletes category', async () => {
 		const { repo } = setup();
 
-		await StatementCategoryService.delete(savedExpenseCategory.id);
+		await StatementCategoryService.softDelete(savedExpenseCategory.id);
 
 		expect(await repo.findOneBy({ id: savedExpenseCategory.id })).toBe(null);
 
 		// Restore deleted category
-		savedExpenseCategory.user = testUser;
-		await repo.save(savedExpenseCategory);
+		await repo.restore(savedExpenseCategory.id);
 		savedExpenseCategory = (await repo.findOneBy({
 			id: savedExpenseCategory.id,
 		})) as StatementCategory;
 	});
 
-	test('Gets custom category', async () => {
-		expect(await StatementCategoryService.getCustomCategory(randomUUID(), testUser.id)).toEqual(
+	test('Gets category', async () => {
+		expect(await StatementCategoryService.getCategory(savedIncomeCategory.id)).toEqual(
+			savedIncomeCategory
+		);
+		expect(await StatementCategoryService.getCategory(randomUUID())).toBe(null);
+		expect(await StatementCategoryService.getCategory(savedIncomeCategory.id, testUser.id)).toEqual(
+			savedIncomeCategory
+		);
+		expect(await StatementCategoryService.getCategory(savedIncomeCategory.id, randomUUID())).toBe(
 			null
 		);
+	});
+
+	test('Gets custom category', async () => {
+		expect(await StatementCategoryService.getCustomCategory(randomUUID(), testUser.id)).toBe(null);
 		expect(
 			await StatementCategoryService.getCustomCategory(savedIncomeCategory.id, randomUUID())
-		).toEqual(null);
+		).toBe(null);
 		expect(
 			await StatementCategoryService.getCustomCategory(savedIncomeCategory.id, testUser.id)
 		).toEqual(savedIncomeCategory);
