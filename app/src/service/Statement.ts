@@ -38,27 +38,57 @@ export const StatementService = {
 		const statements = await statementsQuery.getMany();
 		return statements;
 	},
-	process: async function (statement: Statement, user: User) {
+	getRecurrenceTypeByStatementId: async (id: string) => {
+		const statemnet = await StatementRepository.createQueryBuilder('statements')
+			.leftJoinAndSelect('statements.recurrenceType', 'recurrenceType')
+			.where('statements.id = :id', { id })
+			.getOne();
+
+		if (statemnet !== null) {
+			return statemnet.recurrenceType;
+		}
+
+		return null;
+	},
+	getUserByStatementId: async (id: string) => {
+		const statement = await StatementRepository.createQueryBuilder('statements')
+			.leftJoinAndSelect('statements.user', 'user')
+			.where('statements.id = :id', { id })
+			.getOne();
+
+		if (statement !== null) {
+			return statement.user;
+		}
+
+		return null;
+	},
+	updateUserBalance: async function (statement: Statement, user?: User) {
 		const StatementBalanceMap = {
 			income: (balance: number, amount: number) => balance + amount,
 			expense: (balance: number, amount: number) => balance - amount,
 		};
 
-		if (statement.isProcessed) {
-			throw new CustomError(400, 'The statement is already processed.');
+		if (typeof user === 'undefined') {
+			user = (await this.getUserByStatementId(statement.id)) as User;
+		}
+
+		if (user.balance === null) {
+			throw new CustomError(400, 'Invalid user balance.');
 		}
 
 		user.balance = StatementBalanceMap[statement.type](
 			Number(user.balance),
 			Number(statement.amount)
 		);
+
 		if (user.balance < 0) {
 			throw new CustomError(400, 'Not enough money in balance.');
 		}
 
 		await UserService.save(user);
-
-		const recurrenceType = (await StatementRecurrenceTypeService.getRecurrenceTypeByStatementId(
+	},
+	updateProcessedStatement: async function (statement: Statement) {
+		const recurrenceType = (await this.getRecurrenceTypeByStatementId(
 			statement.id
 		)) as StatementRecurrenceType;
 
@@ -71,14 +101,19 @@ export const StatementService = {
 
 		if (recurrenceType.alias === 'once') {
 			await this.softDelete(statement.id);
+			statement.deletedAt = new Date();
 		}
 
-		const processedStatement: Partial<ProcessedStatement> = {
-			statement: statement,
-			amount: statement.amount,
-		};
+		return true;
+	},
+	process: async function (statement: Statement, user: User) {
+		if (statement.isProcessed) {
+			throw new CustomError(400, 'The statement is already processed.');
+		}
 
-		await ProcessedStatementService.save(processedStatement);
+		await this.updateUserBalance(statement, user);
+		await this.updateProcessedStatement(statement);
+		await ProcessedStatementService.save({ statement: statement, amount: statement.amount });
 
 		return true;
 	},

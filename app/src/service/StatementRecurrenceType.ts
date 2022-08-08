@@ -69,19 +69,4 @@ export const StatementRecurrenceTypeService = {
 
 		return recurrenceType;
 	},
-	getRecurrenceTypeByStatementId: async (id: string) => {
-		const recurrenceTypeId = await StatementRepository.createQueryBuilder('statements')
-			.leftJoinAndSelect('statements.recurrenceType', 'recurrenceType')
-			.where('statements.id = :id', { id })
-			.select('recurrenceType.id')
-			.getRawOne();
-
-		const recurrenceType = await StatementRecurrenceTypeRepository.createQueryBuilder(
-			'recurrence_types'
-		)
-			.where('recurrence_types.id = :recurrenceType_id', recurrenceTypeId)
-			.getOne();
-
-		return recurrenceType;
-	},
 };

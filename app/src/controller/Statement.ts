@@ -120,10 +120,6 @@ export const StatementController = {
 				return res.status(401).json({ message: 'Invalid operation.' });
 			}
 
-			if (user.balance === null) {
-				return res.status(400).json({ message: 'Invalid balance.' });
-			}
-
 			await StatementService.process(statement, user);
 			return res.status(200).json({ message: 'The statement is processed sucessfully.' });
 		} catch (e: any) {
