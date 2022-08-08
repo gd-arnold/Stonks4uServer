@@ -3,7 +3,7 @@ import { ProcessedStatement } from '../entity/ProcessedStatement';
 import { Statement, StatementTypeType } from '../entity/Statement';
 import { StatementRecurrenceType } from '../entity/StatementRecurrenceType';
 import { User } from '../entity/User';
-import { CustomError } from '../helpers/CustomError';
+import { ClientError } from '../helpers/ClientError';
 import { ProcessedStatementService } from './ProcessedStatement';
 import { StatementRecurrenceTypeService } from './StatementRecurrenceType';
 import { UserService } from './User';
@@ -73,7 +73,7 @@ export const StatementService = {
 		}
 
 		if (user.balance === null) {
-			throw new CustomError(400, 'Invalid user balance.');
+			throw new ClientError(400, 'Invalid user balance.');
 		}
 
 		user.balance = StatementBalanceMap[statement.type](
@@ -82,7 +82,7 @@ export const StatementService = {
 		);
 
 		if (user.balance < 0) {
-			throw new CustomError(400, 'Not enough money in balance.');
+			throw new ClientError(400, 'Not enough money in balance.');
 		}
 
 		await UserService.save(user);
@@ -108,7 +108,7 @@ export const StatementService = {
 	},
 	process: async function (statement: Statement, user: User) {
 		if (statement.isProcessed) {
-			throw new CustomError(400, 'The statement is already processed.');
+			throw new ClientError(400, 'The statement is already processed.');
 		}
 
 		await this.updateUserBalance(statement, user);

@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { StatementDTO } from '../dto/Statement';
 import { Statement } from '../entity/Statement';
 import { User } from '../entity/User';
-import { CustomError } from '../helpers/CustomError';
+import { ClientError } from '../helpers/ClientError';
 import { StatementService } from '../service/Statement';
 import { StatementCategoryService } from '../service/StatementCategory';
 import { StatementRecurrenceTypeService } from '../service/StatementRecurrenceType';
@@ -123,7 +123,7 @@ export const StatementController = {
 			await StatementService.process(statement, user);
 			return res.status(200).json({ message: 'The statement is processed sucessfully.' });
 		} catch (e: any) {
-			if (e instanceof CustomError) {
+			if (e instanceof ClientError) {
 				return res.status(e.status).json({ message: e.message });
 			}
 

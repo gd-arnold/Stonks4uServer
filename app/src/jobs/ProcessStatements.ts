@@ -4,7 +4,7 @@ import { ProcessedStatement } from '../entity/ProcessedStatement';
 import { Statement } from '../entity/Statement';
 import { StatementRecurrenceType } from '../entity/StatementRecurrenceType';
 import { User } from '../entity/User';
-import { CustomError } from '../helpers/CustomError';
+import { ClientError } from '../helpers/ClientError';
 import { ProcessedStatementService } from '../service/ProcessedStatement';
 import { StatementService } from '../service/Statement';
 import { UserService } from '../service/User';
@@ -38,12 +38,14 @@ const process = async (statement: Statement) => {
 		}
 		return true;
 	} catch (e: any) {
-		if (e instanceof CustomError) {
+		if (e instanceof ClientError) {
 			statement.required_processes++;
 			await StatementService.save(statement);
-		} else {
-			console.error(e.message);
+
+			return true;
 		}
+
+		console.error(e.message);
 	}
 };
 
