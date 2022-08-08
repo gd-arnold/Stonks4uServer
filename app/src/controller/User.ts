@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserBalanceDTO } from '../dto/UserBalance';
 import { User } from '../entity/User';
+import { ErrorHandler } from '../helpers/ErrorHandler';
 import { UserService } from '../service/User';
 
 export const UserController = {
@@ -15,7 +16,7 @@ export const UserController = {
 			await UserService.save(user);
 			return res.status(204).send();
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 };

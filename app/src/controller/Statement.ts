@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { StatementDTO } from '../dto/Statement';
 import { Statement } from '../entity/Statement';
 import { User } from '../entity/User';
-import { ClientError } from '../helpers/ClientError';
+import { ErrorHandler } from '../helpers/ErrorHandler';
 import { StatementService } from '../service/Statement';
 import { StatementCategoryService } from '../service/StatementCategory';
 import { StatementRecurrenceTypeService } from '../service/StatementRecurrenceType';
@@ -23,7 +23,7 @@ export const StatementController = {
 				const statements = await StatementService.getStatements(userId);
 				return res.status(200).json({ statements });
 			} catch (e) {
-				return res.status(500).json({ e });
+				return ErrorHandler.controller(res, e);
 			}
 		},
 		income: async (req: Request, res: Response) => {
@@ -38,7 +38,7 @@ export const StatementController = {
 				const statements = await StatementService.getStatements(userId, 'income');
 				return res.status(200).json({ statements });
 			} catch (e) {
-				return res.status(500).json({ e });
+				return ErrorHandler.controller(res, e);
 			}
 		},
 		expense: async (req: Request, res: Response) => {
@@ -53,7 +53,7 @@ export const StatementController = {
 				const statements = await StatementService.getStatements(userId, 'expense');
 				return res.status(200).json({ statements });
 			} catch (e) {
-				return res.status(500).json({ e });
+				return ErrorHandler.controller(res, e);
 			}
 		},
 	},
@@ -101,7 +101,7 @@ export const StatementController = {
 			await StatementService.save(statement);
 			return res.status(201).json({ message: 'The statement is successully created.' });
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 	process: async (req: Request, res: Response) => {
@@ -122,12 +122,8 @@ export const StatementController = {
 
 			await StatementService.process(statement, user);
 			return res.status(200).json({ message: 'The statement is processed sucessfully.' });
-		} catch (e: any) {
-			if (e instanceof ClientError) {
-				return res.status(e.status).json({ message: e.message });
-			}
-
-			return res.status(500).json({ e });
+		} catch (e) {
+			return ErrorHandler.controller(res, e);
 		}
 	},
 	delete: async (req: Request, res: Response) => {
@@ -148,7 +144,7 @@ export const StatementController = {
 			await StatementService.softDelete(statementId);
 			return res.status(204).send();
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 };

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { LoginUserDTO, RegisterUserDTO } from '../dto/Auth';
+import { ErrorHandler } from '../helpers/ErrorHandler';
 import { AuthService, ITokenPayload } from '../service/Auth';
 import { UserService } from '../service/User';
 
@@ -23,7 +24,7 @@ export const AuthController = {
 				token,
 			});
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 
@@ -48,7 +49,7 @@ export const AuthController = {
 				token,
 			});
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 };

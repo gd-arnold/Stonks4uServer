@@ -2,6 +2,7 @@ import { isUUID } from 'class-validator';
 import { Request, Response } from 'express';
 import { StatementCategoryDTO } from '../dto/StatementCategory';
 import { User } from '../entity/User';
+import { ErrorHandler } from '../helpers/ErrorHandler';
 import { StatementCategoryService } from '../service/StatementCategory';
 import { UserService } from '../service/User';
 
@@ -19,7 +20,7 @@ export const StatementCategoryController = {
 				const categories = await StatementCategoryService.getCategories(id);
 				return res.status(200).json({ categories });
 			} catch (e) {
-				return res.status(500).json({ e });
+				return ErrorHandler.controller(res, e);
 			}
 		},
 		income: async (req: Request, res: Response) => {
@@ -34,7 +35,7 @@ export const StatementCategoryController = {
 				const categories = await StatementCategoryService.getCategories(id, 'income');
 				return res.status(200).json({ categories });
 			} catch (e) {
-				return res.status(500).json({ e });
+				return ErrorHandler.controller(res, e);
 			}
 		},
 		expense: async (req: Request, res: Response) => {
@@ -49,7 +50,7 @@ export const StatementCategoryController = {
 				const categories = await StatementCategoryService.getCategories(id, 'expense');
 				return res.status(200).json({ categories });
 			} catch (e) {
-				return res.status(500).json({ e });
+				return ErrorHandler.controller(res, e);
 			}
 		},
 		default: {
@@ -59,7 +60,7 @@ export const StatementCategoryController = {
 
 					return res.status(200).json({ categories });
 				} catch (e) {
-					return res.status(500).json({ e });
+					return ErrorHandler.controller(res, e);
 				}
 			},
 			income: async (req: Request, res: Response) => {
@@ -68,7 +69,7 @@ export const StatementCategoryController = {
 
 					return res.status(200).json({ categories });
 				} catch (e) {
-					return res.status(500).json({ e });
+					return ErrorHandler.controller(res, e);
 				}
 			},
 			expense: async (req: Request, res: Response) => {
@@ -77,7 +78,7 @@ export const StatementCategoryController = {
 
 					return res.status(200).json({ categories });
 				} catch (e) {
-					return res.status(500).json({ e });
+					return ErrorHandler.controller(res, e);
 				}
 			},
 		},
@@ -94,7 +95,7 @@ export const StatementCategoryController = {
 					const categories = await StatementCategoryService.getCustomCategories(id);
 					return res.status(200).json({ categories });
 				} catch (e) {
-					return res.status(500).json({ e });
+					return ErrorHandler.controller(res, e);
 				}
 			},
 			income: async (req: Request, res: Response) => {
@@ -109,7 +110,7 @@ export const StatementCategoryController = {
 					const categories = await StatementCategoryService.getCustomCategories(id, 'income');
 					return res.status(200).json({ categories });
 				} catch (e) {
-					return res.status(500).json({ e });
+					return ErrorHandler.controller(res, e);
 				}
 			},
 			expense: async (req: Request, res: Response) => {
@@ -124,7 +125,7 @@ export const StatementCategoryController = {
 					const categories = await StatementCategoryService.getCustomCategories(id, 'expense');
 					return res.status(200).json({ categories });
 				} catch (e) {
-					return res.status(500).json({ e });
+					return ErrorHandler.controller(res, e);
 				}
 			},
 		},
@@ -145,7 +146,7 @@ export const StatementCategoryController = {
 			await StatementCategoryService.save(category);
 			return res.status(201).json({ message: 'The category is successully created.' });
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 	put: async (req: Request<{ id: string }, {}, StatementCategoryDTO>, res: Response) => {
@@ -168,7 +169,7 @@ export const StatementCategoryController = {
 
 			return res.status(204).send();
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 	delete: async (req: Request, res: Response) => {
@@ -189,7 +190,7 @@ export const StatementCategoryController = {
 			await StatementCategoryService.softDelete(categoryId);
 			return res.status(204).send();
 		} catch (e) {
-			return res.status(500).json({ e });
+			return ErrorHandler.controller(res, e);
 		}
 	},
 };
