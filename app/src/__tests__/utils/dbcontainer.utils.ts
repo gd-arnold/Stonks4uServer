@@ -6,7 +6,7 @@ export class TestDBContainer {
 	startedContainer: StartedPostgreSqlContainer;
 
 	constructor() {
-		this.stoppedContainer = new PostgreSqlContainer('postgres:14');
+		this.stoppedContainer = new PostgreSqlContainer('postgres:15');
 	}
 
 	async start() {
